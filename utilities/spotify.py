@@ -11,7 +11,7 @@ import json
 from datetime import datetime, date
 
 from quart import request
-from utilities import utils, cache
+from utilities import cache
 from config import SPOTIFY
 
 

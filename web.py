@@ -23,7 +23,7 @@ from quart import (
 
 
 import config
-from utilities import http, spotify, utils, database
+from utilities import http, spotify, database
 
 
 # Set up our website logger
@@ -58,13 +58,8 @@ class CS35LProject(Quart):
         self.secret_key = secrets.token_urlsafe(64)
 
         self.current_users = {}
-        self.owner = "x7vjqlqi759vsiemiqh9ekdoa"  # Hecate946
 
         self.client = spotify.ClientCredentials(self)
-
-        self.jinja_env.globals.update(
-            readable_audio_features=utils.readable_audio_features
-        )
 
     def run(self):
         super().run(host=config.WEB.host, port=config.WEB.port, loop=self.loop)
