@@ -1,0 +1,9 @@
+.venv
+.vscode
+**.DS_Store
+**__pycache__
+
+# secrets file
+config.py
+# json database file
+db/data.json
