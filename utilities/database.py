@@ -19,7 +19,7 @@ class DB:
 
     def __init__(self, loop=None):
         self.loop = loop or asyncio.get_event_loop()
-        self.json = None
+        self.json = False
         self.loop.run_until_complete(self.__init__db())
 
     async def __init__db(self):

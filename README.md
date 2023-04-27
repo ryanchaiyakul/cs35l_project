@@ -34,7 +34,7 @@ myuser@computer:~$ sudo apt install postgresql postgresql-contrib
 myuser@computer:~$ sudo -i -u postgres
 postgres@computer:~$ psql
 postgres=# \password
-postgres=# mypassword 3 this will be used in the config.py file
+postgres=# mypassword # this will be used in the config.py file
 postgres=# \q
 postgres@computer:~$ createdb CS35L
 postgres@computer:~$ su -

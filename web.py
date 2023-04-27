@@ -1,8 +1,6 @@
 import os
-import json
-import asyncio
 import aiohttp
-import asyncpg
+import asyncio
 import logging
 import secrets
 
@@ -65,11 +63,8 @@ class CS35LProject(Quart):
         super().run(host=config.WEB.host, port=config.WEB.port, loop=self.loop)
 
     async def set_sessions(self):
-        if not hasattr(self, "session"):
-            self.session = aiohttp.ClientSession(loop=self.loop)
-
         if not hasattr(self, "http"):
-            self.http = http.Utils(self.session)
+            self.http = http.Utils(aiohttp.ClientSession())
 
 
 app = CS35LProject(__name__)
@@ -116,7 +111,7 @@ async def _tasked_requests(user):
         await user.get_top_tracks(time_range=span)
         await user.get_top_artists(time_range=span)
 
-    await user.get_recommendations
+    await user.get_recommendations()
     await user.get_recent_tracks()
     await user.get_liked_tracks()
 
