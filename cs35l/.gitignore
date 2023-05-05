@@ -1,3 +1,13 @@
+.venv
+.vscode
+**.DS_Store
+**__pycache__
+
+# secrets file
+config.py
+# json database file
+db/data.json
+
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
