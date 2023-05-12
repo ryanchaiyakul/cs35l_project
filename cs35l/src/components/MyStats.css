@@ -1,0 +1,39 @@
+#wrapper {
+    width: 100%;
+    border: 1px solid black;
+    overflow: auto; 
+}
+
+
+
+
+#first {
+    width: 33%;
+    float:left; /* add this */
+    float:top;
+    border: 1px solid red;
+    overflow: auto; 
+}
+
+#firstData{
+    width:auto;
+    height:100%;
+    border: 1px solid grey;
+    overflow: auto;
+}
+
+
+
+/* flows left of the third column */
+#second {
+    border: 1px solid green;
+    width: 33%;
+    overflow: auto; /* if you don't want #second to wrap below #first */
+    float:left; 
+}
+#third{
+    border: 1px solid yellow;
+    width: 33%;
+    overflow:auto;
+    float:left;
+}

@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+/* Used for background colors */
+.background-red {
+  background-color: red;
+}
+
+.background-blue {
+  background-color: blue;
+}
+
+.font-link {
+  font-family: 'Sample Font';
+}
