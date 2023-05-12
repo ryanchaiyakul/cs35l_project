@@ -2,20 +2,16 @@
 ## AUTHENTICATION AND SPOTIFY REQUESTS ##
 #########################################
 
-from urllib.parse import urlencode
-from collections import Counter, defaultdict
-import base64
 import time
-import json
+import base64
+from urllib.parse import urlencode
 
-from datetime import datetime, date
-
-from quart import request
 from utilities import cache
 from config import SPOTIFY
 
 
 class CONSTANTS:
+    BASE_URL = "https://open.spotify.com/"
     API_URL = "https://api.spotify.com/v1/"
     AUTH_URL = "https://accounts.spotify.com/authorize"
     TOKEN_URL = "https://accounts.spotify.com/api/token"
@@ -39,135 +35,6 @@ class CONSTANTS:
         "medium_term": "six months.",
         "long_term": "few years.",
     }
-
-
-class ClientCredentials:
-    def __init__(self, app):
-        self.app = app
-        self.id = SPOTIFY.client_id
-        self.secret = SPOTIFY.client_secret
-
-        self.token = None
-        app.loop.create_task(self.get_token())  # validate token
-
-    def _make_token_auth(self, client_id, client_secret):
-        auth_header = base64.b64encode(
-            (client_id + ":" + client_secret).encode("ascii")
-        )
-        return {"Authorization": "Basic %s" % auth_header.decode("ascii")}
-
-    async def get_track(self, track_id):
-        """Get a track's info from its id"""
-        return await self.make_spotify_req(
-            CONSTANTS.API_URL + "tracks/{0}".format(track_id)
-        )
-
-    async def get_track_features(self, track_id):
-        return await self.make_spotify_req(
-            CONSTANTS.API_URL + "audio-features/{0}".format(track_id)
-        )
-
-    async def get_tracks_features(self, track_ids):
-        features = []
-        while len(track_ids) > 0:
-            params = {"ids": ",".join(track_ids[:100])}
-            query = urlencode(params)
-            batch = await self.make_spotify_req(
-                CONSTANTS.API_URL + "audio-features?" + query
-            )
-            features.extend(batch["audio_features"])
-            del track_ids[:100]
-
-        return features
-
-    @cache.cache(strategy=cache.Strategy.raw)
-    async def get_full_track(self, track_id):
-        data = await self.get_track(track_id)
-        data["audio_features"] = await self.get_track_features(track_id)
-
-        album_tracks = data["album"]["tracks"] = await self.get_album_tracks(
-            data["album"]["id"]
-        )
-
-        artist_tracks = data["artists"][0][
-            "top_tracks"
-        ] = await self.get_artist_top_tracks(data["artists"][0]["id"])
-
-        tracks_without_features = album_tracks + artist_tracks
-
-        features = await self.get_tracks_features(
-            [t["id"] for t in tracks_without_features]
-        )
-        for track, feat in zip(tracks_without_features, features):
-            track["audio_features"] = feat
-
-        return Track(data)
-
-    async def get_album_tracks(self, album_id):
-        """Get an album's info from its URI"""
-        r = await self.make_spotify_req(
-            CONSTANTS.API_URL + "albums/{0}/tracks".format(album_id)
-        )
-        return r["items"]
-
-    async def get_artist_top_tracks(self, artist_id):
-        """Get an artist's info from its URI"""
-        r = await self.make_spotify_req(
-            CONSTANTS.API_URL + "artists/{0}/top-tracks?market=US".format(artist_id)
-        )
-        return r["tracks"]
-
-    async def get_playlist(self, user, uri):
-        """Get a playlist's info from its URI"""
-        return await self.make_spotify_req(
-            CONSTANTS.API_URL + "users/{0}/playlists/{1}{2}".format(user, uri)
-        )
-
-    async def get_playlist_tracks(self, uri):
-        """Get a list of a playlist's tracks"""
-        return await self.make_spotify_req(
-            CONSTANTS.API_URL + "playlists/{0}/tracks".format(uri)
-        )
-
-    async def make_spotify_req(self, url):
-        """Proxy method for making a Spotify req using the correct Auth headers"""
-        token = await self.get_token()
-        return await self.make_get(
-            url, headers={"Authorization": "Bearer {0}".format(token)}
-        )
-
-    async def make_get(self, url, headers=None):
-        """Makes a GET request and returns the results"""
-        return await self.app.http.get(url, headers=headers, res_method="json")
-
-    async def make_post(self, url, payload, headers=None):
-        """Makes a POST request and returns the results"""
-        return await self.app.http.post(
-            url, data=payload, headers=headers, res_method="json"
-        )
-
-    async def get_token(self):
-        """Gets the token or creates a new one if expired"""
-        if self.token and not await self.check_token(self.token):
-            return self.token["access_token"]
-
-        token = await self.request_token()
-        if token:
-            token["expires_at"] = int(time.time()) + token["expires_in"]
-            self.token = token
-            return self.token["access_token"]
-
-    async def check_token(self, token):
-        """Checks a token is valid"""
-        now = int(time.time())
-        return token["expires_at"] - now < 60
-
-    async def request_token(self):
-        """Obtains a token from Spotify and returns it"""
-        payload = {"grant_type": "client_credentials"}
-        headers = self._make_token_auth(self.id, self.secret)
-        r = await self.make_post(CONSTANTS.TOKEN_URL, payload=payload, headers=headers)
-        return r
 
 
 class Oauth:
@@ -408,3 +275,7 @@ class User:  # Current user's spotify instance
 
         return top_artists
     
+    @cache.cache(strategy=cache.Strategy.timed)
+    async def get_embed(self, url):
+        query = urlencode({"url": url})
+        return await self.get(CONSTANTS.BASE_URL + "oembed?" + query)

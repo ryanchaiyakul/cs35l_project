@@ -15,7 +15,6 @@ from quart import (
     url_for,
     render_template,
     session,
-    jsonify,
     make_response,
 )
 
@@ -56,8 +55,6 @@ class CS35LProject(Quart):
         self.secret_key = secrets.token_urlsafe(64)
 
         self.current_users = {}
-
-        self.client = spotify.ClientCredentials(self)
 
     def run(self):
         super().run(host=config.WEB.host, port=config.WEB.port, loop=self.loop)
@@ -132,7 +129,7 @@ async def faq_page():
     return "Did you really think I'd write a FAQ page? I sure hope you didn't."
 
 
-@app.route("/spotify/connect")
+@app.route("/connect")
 async def spotify_connect():
     code = request.args.get("code")
 
@@ -159,7 +156,7 @@ async def spotify_connect():
     return response
 
 
-@app.route("/spotify/disconnect")
+@app.route("/disconnect")
 async def spotify_disconnect():
     user_id = request.cookies.get("user_id")
     if not user_id:
@@ -172,7 +169,7 @@ async def spotify_disconnect():
     return response
 
 
-@app.route("/spotify/recent/")
+@app.route("/recent/")
 @login_required()
 async def spotify_recent():
     user = await get_user()
@@ -181,7 +178,7 @@ async def spotify_recent():
     return str(tracks)
 
 
-@app.route("/spotify/liked/")
+@app.route("/liked/")
 @login_required()
 async def spotify_liked():
     user = await get_user()
@@ -189,7 +186,7 @@ async def spotify_liked():
     return str(tracks)
 
 
-@app.route("/spotify/top_tracks/")
+@app.route("/embed/")
 @login_required()
 async def spotify_top_tracks():
     span = request.args.get("time_range", "short_term")
@@ -198,16 +195,12 @@ async def spotify_top_tracks():
     return str(tracks)
 
 
-# INTERNALS
-
-@app.route("/spotify/_token", methods=["GET"])
-async def _spotify_token():
-    user_id = request.cookies.get("user_id")
-    if not user_id:
-        return jsonify(token=None)
-    user = await spotify.User.from_id(user_id, app)
-    token = await user.get_token()
-    return jsonify(token=token)
+@app.route("/embeds/")
+@login_required()
+async def get_embed():
+    user = await get_user()
+    embed = await user.get_embed("https://open.spotify.com/track/1B6JNX4RQh0Ou9GaQOeCDp?si=12da6561099544e1")
+    return embed["html"]
 
 
 if __name__ == "__main__":
