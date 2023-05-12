@@ -202,6 +202,5 @@ async def get_embed():
     embed = await user.get_embed("https://open.spotify.com/track/1B6JNX4RQh0Ou9GaQOeCDp?si=12da6561099544e1")
     return embed["html"]
 
-
 if __name__ == "__main__":
     app.run()
