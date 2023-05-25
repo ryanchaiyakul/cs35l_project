@@ -1,39 +1,70 @@
 #wrapper {
-    width: 100%;
-    border: 1px solid black;
-    overflow: auto; 
+    /* width: 100%; */
+    width: '100vw';
+    border: 1px solid rgb(158, 79, 164);
+    overflow: auto;
+    position: relative;
+    height: '100vh';
 }
-
-
 
 
 #first {
+    position:absolute;
     width: 33%;
-    float:left; /* add this */
-    float:top;
+    height:80%;
+    float: left;
+    overflow:auto;
     border: 1px solid red;
-    overflow: auto; 
 }
 
-#firstData{
-    width:auto;
-    height:100%;
+#firstTitle {
+    display:block;
+    height:auto;
+    width: auto;
     border: 1px solid grey;
-    overflow: auto;
 }
+
+#firstData {
+    display:block;
+    margin-top: 1em;
+    width:100%;
+    height:auto;
+    border: 1px solid pink;
+}
+
 
 
 
 /* flows left of the third column */
 #second {
-    border: 1px solid green;
+    /* display:block; */
+    position:absolute;
+    margin-left: 33%;               /*To make the height match the 80%, in which only works in absolute*/
     width: 33%;
-    overflow: auto; /* if you don't want #second to wrap below #first */
-    float:left; 
-}
-#third{
-    border: 1px solid yellow;
-    width: 33%;
-    overflow:auto;
+    height: 80%;
     float:left;
+    border: 1px solid green;
+}
+#secondTitle {
+    display:block;
+    height:auto;
+    width: auto;
+    border: 1px solid grey;
+}
+
+
+#third {
+    /* display:block; */
+    position:absolute;
+    margin-left: 66%;               /*To make the height match the 80%, in which only works in absolute*/
+    width: 33%;
+    height: 80%;
+    float:right;
+    border: 1px solid white;
+}
+#thirdTitle {
+    display:block;
+    height:auto;
+    width: auto;
+    border: 1px solid grey;
 }
