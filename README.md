@@ -63,7 +63,7 @@ Copy the client ID and client secret and paste it into the config.py file
 class WEB:
     host = "localhost"
     port = 3000
-    base_url = f"http://{host}:{port}/"
+    base_url = f"http://{host}:{port}"
 
 
 class POSTGRES:

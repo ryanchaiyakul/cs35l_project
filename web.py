@@ -22,7 +22,6 @@ from quart import (
 import config
 from utilities import http, spotify, database
 
-
 # Set up our website logger
 MAX_LOGGING_BYTES = 32 * 1024 * 1024  # 32 MiB
 FOLDER = "./logs"
@@ -44,7 +43,7 @@ fmt = logging.Formatter(
 handler.setFormatter(fmt)
 
 
-class CS35LProject(Quart):
+class CS35L(Quart):
     def __init__(self, name):
         super().__init__(name)
         self.loop = asyncio.get_event_loop()
@@ -55,7 +54,7 @@ class CS35LProject(Quart):
         self.secret_key = secrets.token_urlsafe(64)
 
         self.current_users = {}
-
+                     
     def run(self):
         super().run(host=config.WEB.host, port=config.WEB.port, loop=self.loop)
 
@@ -64,7 +63,7 @@ class CS35LProject(Quart):
             self.http = http.Utils(aiohttp.ClientSession())
 
 
-app = CS35LProject(__name__)
+app = CS35L(__name__)
 
 
 async def get_user():
@@ -112,7 +111,6 @@ async def _tasked_requests(user):
     await user.get_recent_tracks()
     await user.get_liked_tracks()
 
-
 @app.before_first_request
 async def speed_loader():
     user = await get_user()
@@ -156,7 +154,7 @@ async def spotify_connect():
     return response
 
 
-@app.route("/disconnect")
+@app.route("/disconnect/")
 async def spotify_disconnect():
     user_id = request.cookies.get("user_id")
     if not user_id:
@@ -171,7 +169,7 @@ async def spotify_disconnect():
 
 @app.route("/recent/")
 @login_required()
-async def spotify_recent():
+async def recent():
     user = await get_user()
     tracks = await user.get_recent_tracks()
 
@@ -184,7 +182,6 @@ async def spotify_liked():
     user = await get_user()
     tracks = await user.get_liked_tracks()
     return str(tracks)
-
 
 @app.route("/embed/")
 @login_required()
