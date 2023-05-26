@@ -8,14 +8,16 @@ function getCookie(){
     var key, value, i;
     var cookieArray  = document.cookie.split(';');
     
+
     for (i = 0; i < cookieArray.length; i++){
+        console.log(cookieArray);
         key = cookieArray[i].slice(0, cookieArray[i].indexOf("="));
         value = cookieArray[i].slice(cookieArray[i].indexOf("=")+1);
         console.log("KEY: " + key);
 
-        
+
         //Might have to change the userID retrieval part. 
-        if (key == 'userID'){
+        if (key == 'user_id'){
             userId = value;
             console.log('userID is ' + value);
         }
