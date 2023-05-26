@@ -1,4 +1,5 @@
 import os
+import json
 import aiohttp
 import asyncio
 import logging
@@ -10,6 +11,7 @@ from logging.handlers import RotatingFileHandler
 
 from quart import (
     Quart,
+    abort,
     request,
     redirect,
     url_for,
@@ -74,6 +76,11 @@ async def get_user():
             return user
         return await spotify.User.from_id(user_id, app)
 
+async def get_user_from_id(user_id):
+    user = app.current_users.get(user_id)
+    if user:
+        return user
+    return await spotify.User.from_id(user_id, app)
 
 def login_required():
     def decorator(func):
@@ -102,6 +109,7 @@ def login_required():
 
 
 async def _tasked_requests(user):
+    return
     """Immediately cache spotify data for efficiency"""
     for span in spotify.CONSTANTS.TIME_RANGE_MAP.keys():
         await user.get_top_tracks(time_range=span)
@@ -199,5 +207,33 @@ async def get_embed():
     embed = await user.get_embed("https://open.spotify.com/track/1B6JNX4RQh0Ou9GaQOeCDp?si=12da6561099544e1")
     return embed["html"]
 
+
+###############
+## INTERNALS ##
+###############
+@app.route("/_get_stats")
+async def _get_user_stats():
+    user_id = request.args.get('user_id')
+    if not user_id:
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
+    
+
+    rtracks = await user.get_recent_tracks(10)
+    ttracks = await user.get_top_tracks(10)
+    artists = await user.get_top_artists(10)
+
+    return {
+        "recent": rtracks,
+        "top_tracks": ttracks,
+        "top_artists": artists
+    }
+
+
 if __name__ == "__main__":
     app.run()
+
+
+
