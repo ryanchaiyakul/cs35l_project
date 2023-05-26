@@ -1,24 +1,31 @@
 import './MyStats.css';
 
-//Function to get cookie (might have to change)
+//Able to get userId from the getCookie() as well. 
+let userId = "";
+
+//Function to get the user_id for the cookie. (Find which user's statistics to show)
 function getCookie(){
     var key, value, i;
     var cookieArray  = document.cookie.split(';');
-
+    
     for (i = 0; i < cookieArray.length; i++){
         key = cookieArray[i].slice(0, cookieArray[i].indexOf("="));
         value = cookieArray[i].slice(cookieArray[i].indexOf("=")+1);
+        console.log("KEY: " + key);
+
+        
+        //Might have to change the userID retrieval part. 
         if (key == 'userID'){
-            alert('userID is ' + value);
+            userId = value;
+            console.log('userID is ' + value);
         }
     }
 }
 
 
 function myStats() {
-    
+    getCookie();
     return (
-        
         <div
             style={{
                 backgroundColor: '#02343F',}}
