@@ -232,6 +232,41 @@ async def _get_user_stats():
     }
 
 
+@app.route("/_upload/")
+async def upload():
+    return await render_template("upload.html")
+
+
+@app.route("/_upload_audio", methods=["POST", "GET"])
+async def _upload_audio():
+    if request.method == "POST":
+        form = await request.form
+        files = await request.files
+        try:
+            audio = files['audio_file'].read()
+            title = form['title']
+            owner_id = form['owner_id']
+            tag = form['tag']
+        except:
+            abort(400, "Malformed form received")
+        fields = (title, owner_id, audio, tag)
+        for field in fields:
+            if not field:
+                abort(404, "One or more form fields are empty.")
+        try:
+            await app.db.insert_audio(*fields)
+        except:
+            abort(502, "an audio file with the same title was already uploaded.")
+        return "successfully uploaded audio"
+    else:
+        return await render_template("upload.html")
+    
+
+@app.route("/_get_audio_metadata")
+async def _get_audio_metadata():
+    data = await app.db.fetch_audio_metadata()
+    return [{"title": record['title'], "tag": record["tag"]} for record in data]
+
 if __name__ == "__main__":
     app.run()
 
