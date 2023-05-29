@@ -1,12 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
-import Navbar from './components/NavBar.js'
+import SearchBar from './components/searchBar.js'
+import FileUpload from './components/fileUpload.js'
 
 function App() {
   return (
-    <div className="App">
-      <Navbar/>
-    </div>
+    <SearchBar/>
   );
 }
 
