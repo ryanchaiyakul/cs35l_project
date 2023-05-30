@@ -1,5 +1,4 @@
 import os
-import json
 import aiohttp
 import asyncio
 import logging
@@ -124,6 +123,13 @@ async def speed_loader():
     user = await get_user()
     if user:
         app.loop.create_task(_tasked_requests(user))
+
+@app.after_request
+def after_request(response):
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  return response
 
 
 @app.route("/")
@@ -269,6 +275,5 @@ async def _get_audio_metadata():
 
 if __name__ == "__main__":
     app.run()
-
 
 
