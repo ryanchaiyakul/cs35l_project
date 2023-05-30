@@ -1,4 +1,5 @@
 import os
+import json
 import aiohttp
 import asyncio
 import logging
@@ -10,19 +11,18 @@ from logging.handlers import RotatingFileHandler
 
 from quart import (
     Quart,
+    abort,
     request,
     redirect,
     url_for,
     render_template,
     session,
-    jsonify,
     make_response,
 )
 
 
 import config
 from utilities import http, spotify, database
-
 
 # Set up our website logger
 MAX_LOGGING_BYTES = 32 * 1024 * 1024  # 32 MiB
@@ -45,7 +45,7 @@ fmt = logging.Formatter(
 handler.setFormatter(fmt)
 
 
-class CS35LProject(Quart):
+class CS35L(Quart):
     def __init__(self, name):
         super().__init__(name)
         self.loop = asyncio.get_event_loop()
@@ -56,9 +56,7 @@ class CS35LProject(Quart):
         self.secret_key = secrets.token_urlsafe(64)
 
         self.current_users = {}
-
-        self.client = spotify.ClientCredentials(self)
-
+                     
     def run(self):
         super().run(host=config.WEB.host, port=config.WEB.port, loop=self.loop)
 
@@ -67,7 +65,7 @@ class CS35LProject(Quart):
             self.http = http.Utils(aiohttp.ClientSession())
 
 
-app = CS35LProject(__name__)
+app = CS35L(__name__)
 
 
 async def get_user():
@@ -78,6 +76,11 @@ async def get_user():
             return user
         return await spotify.User.from_id(user_id, app)
 
+async def get_user_from_id(user_id):
+    user = app.current_users.get(user_id)
+    if user:
+        return user
+    return await spotify.User.from_id(user_id, app)
 
 def login_required():
     def decorator(func):
@@ -106,6 +109,7 @@ def login_required():
 
 
 async def _tasked_requests(user):
+    return
     """Immediately cache spotify data for efficiency"""
     for span in spotify.CONSTANTS.TIME_RANGE_MAP.keys():
         await user.get_top_tracks(time_range=span)
@@ -114,7 +118,6 @@ async def _tasked_requests(user):
     await user.get_recommendations()
     await user.get_recent_tracks()
     await user.get_liked_tracks()
-
 
 @app.before_first_request
 async def speed_loader():
@@ -132,7 +135,7 @@ async def faq_page():
     return "Did you really think I'd write a FAQ page? I sure hope you didn't."
 
 
-@app.route("/spotify/connect")
+@app.route("/connect")
 async def spotify_connect():
     code = request.args.get("code")
 
@@ -159,7 +162,7 @@ async def spotify_connect():
     return response
 
 
-@app.route("/spotify/disconnect")
+@app.route("/disconnect/")
 async def spotify_disconnect():
     user_id = request.cookies.get("user_id")
     if not user_id:
@@ -172,24 +175,23 @@ async def spotify_disconnect():
     return response
 
 
-@app.route("/spotify/recent/")
+@app.route("/recent/")
 @login_required()
-async def spotify_recent():
+async def recent():
     user = await get_user()
     tracks = await user.get_recent_tracks()
 
     return str(tracks)
 
 
-@app.route("/spotify/liked/")
+@app.route("/liked/")
 @login_required()
 async def spotify_liked():
     user = await get_user()
     tracks = await user.get_liked_tracks()
     return str(tracks)
 
-
-@app.route("/spotify/top_tracks/")
+@app.route("/embed/")
 @login_required()
 async def spotify_top_tracks():
     span = request.args.get("time_range", "short_term")
@@ -198,17 +200,75 @@ async def spotify_top_tracks():
     return str(tracks)
 
 
-# INTERNALS
+@app.route("/embeds/")
+@login_required()
+async def get_embed():
+    user = await get_user()
+    embed = await user.get_embed("https://open.spotify.com/track/1B6JNX4RQh0Ou9GaQOeCDp?si=12da6561099544e1")
+    return embed["html"]
 
-@app.route("/spotify/_token", methods=["GET"])
-async def _spotify_token():
-    user_id = request.cookies.get("user_id")
+
+###############
+## INTERNALS ##
+###############
+@app.route("/_get_stats")
+async def _get_user_stats():
+    user_id = request.args.get('user_id')
     if not user_id:
-        return jsonify(token=None)
-    user = await spotify.User.from_id(user_id, app)
-    token = await user.get_token()
-    return jsonify(token=token)
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
+    
 
+    rtracks = await user.get_recent_tracks(10)
+    ttracks = await user.get_top_tracks(10)
+    artists = await user.get_top_artists(10)
+
+    return {
+        "recent": rtracks,
+        "top_tracks": ttracks,
+        "top_artists": artists
+    }
+
+
+@app.route("/_upload/")
+async def upload():
+    return await render_template("upload.html")
+
+
+@app.route("/_upload_audio", methods=["POST", "GET"])
+async def _upload_audio():
+    if request.method == "POST":
+        form = await request.form
+        files = await request.files
+        try:
+            audio = files['audio_file'].read()
+            title = form['title']
+            owner_id = form['owner_id']
+            tag = form['tag']
+        except:
+            abort(400, "Malformed form received")
+        fields = (title, owner_id, audio, tag)
+        for field in fields:
+            if not field:
+                abort(404, "One or more form fields are empty.")
+        try:
+            await app.db.insert_audio(*fields)
+        except:
+            abort(502, "an audio file with the same title was already uploaded.")
+        return "successfully uploaded audio"
+    else:
+        return await render_template("upload.html")
+    
+
+@app.route("/_get_audio_metadata")
+async def _get_audio_metadata():
+    data = await app.db.fetch_audio_metadata()
+    return [{"title": record['title'], "tag": record["tag"]} for record in data]
 
 if __name__ == "__main__":
     app.run()
+
+
+

@@ -1,54 +1,52 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 
-const songs = [
-  {
-    title: 'OMG',
-    author: 'New Jeans',
-    tag: 'Kpop',
-  },
-  {
-    title: 'Up!',
-    author: 'Kep1er',
-    tag: 'Kpop',
-  },
-{
-  title: 'So Good',
-  author: 'Weston Estate',
-  tag: 'Indie',
-},
-{
-  title: 'Calone',
-  author: 'Tiffany Day',
-  tag: 'Indie',
-},
-{
-  title: 'Racing through the Night',
-  author: 'Yoasobi',
-  tag: 'Jpop',
-},
-]
+// const songs = [
+//   {
+//     title: 'OMG',
+//     author: 'New Jeans',
+//     tag: 'Kpop',
+//   },
+//   {
+//     title: 'Up!',
+//     author: 'Kep1er',
+//     tag: 'Kpop',
+//   },
+// {
+//   title: 'So Good',
+//   author: 'Weston Estate',
+//   tag: 'Indie',
+// },
+// {
+//   title: 'Calone',
+//   author: 'Tiffany Day',
+//   tag: 'Indie',
+// },
+// {
+//   title: 'Racing through the Night',
+//   author: 'Yoasobi',
+//   tag: 'Jpop',
+// },
+// ]
 
 
 export default function SearchBar() {
-  const [database, setDatabase] = useState([]);
+  const [songs, setSongs] = useState([]);
 
   // fetch list of audios and their metadata
   useEffect(() => {
     const fetchAudioMetadata = async () => {
       try {
-        const response = await axios.get('/_get_audio_metadata');
-        const {database} = response.data;
-        setDatabase(database);
+        const response = await axios.get(`${URL}/_get_audio_metadata`);
+        const {songs} = response.data;
+        setSongs(songs);
       } catch (error) {
         console.error('Error fetching audio metadata:', error);
       }
     };
     fetchAudioMetadata();
   }, []);
-
-  console.log(database);
-
+  console.log(songs);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);

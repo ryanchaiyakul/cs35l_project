@@ -8,3 +8,11 @@ CREATE TABLE IF NOT EXISTS spotify_auth (
 );
 CREATE INDEX IF NOT EXISTS token_idx ON spotify_auth(user_id, token_info);
 
+CREATE TABLE IF NOT EXISTS audio_files (
+    title TEXT PRIMARY KEY,
+    owner_id TEXT,
+    audio BYTEA,
+    tag TEXT,
+    insertion TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'UTC')
+);
+
