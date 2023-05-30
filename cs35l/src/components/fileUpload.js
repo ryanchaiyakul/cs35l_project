@@ -42,7 +42,7 @@ function FileUpload() {
     formData.append('owner_id', userId);
 
     try {
-      const response = await fetch('/_upload_audio', {
+      const response = await fetch(' http://localhost:4000/_upload_audio', {
         method: 'POST',
         body: formData,
       });
@@ -66,12 +66,15 @@ function FileUpload() {
     setUserId(id);
   }, []);
 
+  console.log(userId);
+
   return (
     <div>
-      <form onSubmit={handleFormSubmit}>
-        <input type="file" onChange={handleFileChange} />
-        <input type="text" placeholder="Title" value={title} onChange={handleTitleChange} />
-        <input type="text" placeholder="Tag" value={tag} onChange={handleTagChange} />
+      <form method="post" encType="multipart/form-data" onSubmit={handleFormSubmit}>
+        <input placeholder="file" type="file" name="audio_file" accept="Audio/mp3" onChange={handleFileChange} />
+        <input placeholder="owner id" type="text" name="owner_id"/>
+        <input placeholder="title" type="text" name="title" value={title} onChange={handleTitleChange} />
+        <input placeholder="tag" type="text" name="tag" value={tag} onChange={handleTagChange} />
         <button type="submit">Upload</button>
       </form>
     </div>

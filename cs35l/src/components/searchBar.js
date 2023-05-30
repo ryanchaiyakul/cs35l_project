@@ -38,7 +38,7 @@ export default function SearchBar() {
     const fetchAudioMetadata = async () => {
       try {
         const response = await axios.get(`http://localhost:4000/_get_audio_metadata`);
-        const {songs} = response.data;
+        const songs = response.data;
         setSongs(songs);
       } catch (error) {
         console.error('Error fetching audio metadata:', error);
@@ -46,7 +46,6 @@ export default function SearchBar() {
     };
     fetchAudioMetadata();
   }, []);
-  console.log(songs);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
