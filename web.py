@@ -67,7 +67,6 @@ class CS35L(Quart):
 
 app = CS35L(__name__)
 
-
 async def get_user():
     user_id = request.cookies.get("user_id")
     if user_id:
@@ -124,6 +123,13 @@ async def speed_loader():
     user = await get_user()
     if user:
         app.loop.create_task(_tasked_requests(user))
+
+@app.after_request
+def after_request(response):
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  return response
 
 
 @app.route("/")
@@ -264,8 +270,9 @@ async def _upload_audio():
 
 @app.route("/_get_audio_metadata")
 async def _get_audio_metadata():
-    data = await app.db.fetch_audio_metadata()
-    return [{"title": record['title'], "tag": record["tag"]} for record in data]
+    # data = await app.db.fetch_audio_metadata()
+    # return [{"title": record['title'], "tag": record["tag"]} for record in data]
+    return [{"title": "google chrome sucks", "tag": "hi"}]
 
 if __name__ == "__main__":
     app.run()

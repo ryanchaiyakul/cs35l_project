@@ -37,7 +37,7 @@ export default function SearchBar() {
   useEffect(() => {
     const fetchAudioMetadata = async () => {
       try {
-        const response = await axios.get(`${URL}/_get_audio_metadata`);
+        const response = await axios.get(`http://localhost:4000/_get_audio_metadata`);
         const {songs} = response.data;
         setSongs(songs);
       } catch (error) {
