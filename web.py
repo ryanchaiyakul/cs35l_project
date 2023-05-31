@@ -1,5 +1,4 @@
 import os
-import json
 import aiohttp
 import asyncio
 import logging
@@ -125,6 +124,13 @@ async def speed_loader():
     if user:
         app.loop.create_task(_tasked_requests(user))
 
+@app.after_request
+def after_request(response):
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  return response
+
 
 @app.route("/")
 async def home():
@@ -191,22 +197,6 @@ async def spotify_liked():
     tracks = await user.get_liked_tracks()
     return str(tracks)
 
-@app.route("/embed/")
-@login_required()
-async def spotify_top_tracks():
-    span = request.args.get("time_range", "short_term")
-    user = await get_user()
-    tracks = await user.get_top_tracks(time_range=span)
-    return str(tracks)
-
-
-@app.route("/embeds/")
-@login_required()
-async def get_embed():
-    user = await get_user()
-    embed = await user.get_embed("https://open.spotify.com/track/1B6JNX4RQh0Ou9GaQOeCDp?si=12da6561099544e1")
-    return embed["html"]
-
 
 ###############
 ## INTERNALS ##
@@ -267,8 +257,27 @@ async def _get_audio_metadata():
     data = await app.db.fetch_audio_metadata()
     return [{"title": record['title'], "tag": record["tag"]} for record in data]
 
+@app.route("/_get_user_playlist_names")
+async def _get_user_playlist_names():
+    print(request.cookies["user_id"])
+    user_id = request.args.get('user_id')
+    if not user_id:
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
+    
+    data = await user.get_playlists()
+    return {p["id"]: p["name"] for p in data}
+    
+@app.route("/_get_embed")
+@login_required()
+async def get_embed():
+    user = await get_user()
+    embed = await user.get_embed("https://open.spotify.com/track/1B6JNX4RQh0Ou9GaQOeCDp?si=12da6561099544e1")
+    return embed["html"]
+
 if __name__ == "__main__":
     app.run()
-
 
 

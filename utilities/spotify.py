@@ -276,6 +276,23 @@ class User:  # Current user's spotify instance
         return top_artists
     
     @cache.cache(strategy=cache.Strategy.timed)
+    async def get_playlists(self, playlists: int = 100):
+        """Get a user's owned and followed playlists"""
+        _playlists = []
+        offset = 0
+        while playlists > 0:
+            limit = playlists if playlists < 50 else 50
+            query = urlencode({"limit": limit, "offset": offset * 50})
+            batch = await self.get(CONSTANTS.API_URL + "me/playlists?" + query)
+            if not batch["items"]:
+                break
+            _playlists.extend(batch["items"])
+            playlists -= limit
+            offset += 1
+
+        return _playlists
+    
+    @cache.cache(strategy=cache.Strategy.timed)
     async def get_embed(self, url):
         query = urlencode({"url": url})
         return await self.get(CONSTANTS.BASE_URL + "oembed?" + query)
