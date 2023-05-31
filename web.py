@@ -249,11 +249,15 @@ async def _upload_audio():
         form = await request.form
         files = await request.files
         try:
+            print(form)
+            print(files)
             audio = files['audio_file'].read()
             title = form['title']
             owner_id = form['owner_id']
             tag = form['tag']
-        except:
+        except Exception as e:
+            print(e)
+            raise
             abort(400, "Malformed form received")
         fields = (title, owner_id, audio, tag)
         for field in fields:
@@ -270,9 +274,8 @@ async def _upload_audio():
 
 @app.route("/_get_audio_metadata")
 async def _get_audio_metadata():
-    # data = await app.db.fetch_audio_metadata()
-    # return [{"title": record['title'], "tag": record["tag"]} for record in data]
-    return [{"title": "google chrome sucks", "tag": "hi"}]
+    data = await app.db.fetch_audio_metadata()
+    return [{"title": record['title'], "tag": record["tag"]} for record in data]
 
 if __name__ == "__main__":
     app.run()

@@ -5,7 +5,7 @@ import FileUpload from './components/fileUpload.js'
 
 function App() {
   return (
-    <FileUpload/>
+    <SearchBar/>
   );
 }
 
