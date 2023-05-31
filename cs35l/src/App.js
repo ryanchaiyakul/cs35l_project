@@ -5,7 +5,8 @@ import FileUpload from './components/fileUpload.js'
 
 function App() {
   return (
-    <SearchBar/>
+    // <SpotifyGetPlaylists/>
+    <SpotifyLogin/>
   );
 }
 

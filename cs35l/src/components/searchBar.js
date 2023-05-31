@@ -41,7 +41,15 @@ export default function SearchBar() {
         const {songs} = response.data;
         setSongs(songs);
       } catch (error) {
-        console.error('Error fetching audio metadata:', error);
+        if (error.response) {
+          // req made and responded w status code
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request)
+        {
+          console.log(error.request);
+        }
       }
     };
     fetchAudioMetadata();
