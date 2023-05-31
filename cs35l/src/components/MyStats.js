@@ -18,9 +18,6 @@ function getCookie(){
         key = cookieArray[i].slice(0, cookieArray[i].indexOf("="));
         value = cookieArray[i].slice(cookieArray[i].indexOf("=")+1);
         console.log("KEY: " + key);
-
-
-        //Might have to change the userID retrieval part. 
         if (key == 'user_id'){
             userId = value;
             console.log('userID is ' + value);
@@ -28,17 +25,22 @@ function getCookie(){
     }
 }
 
-//Trying to put as query param into get_request. 
-async function postJSON(data) {
-    const response = await fetch("http://localhost:3000/", {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-        },
+
+
+//Trying to put as query param into (Which redirection URL?)
+async function fetchStats(data) {
+    const response = await fetch("http://localhost:4000/get_user_stats", {
+        method: "GET", // or 'PUT'
         body: JSON.stringify(data),
       });
   
     const result = await response.json();
+    if(result.ok){
+        console.log("Succesfully retrieved the stats")
+    }
+    else{
+        console.log("Couldn't retrieve the stats");
+    }
 }
     
 
