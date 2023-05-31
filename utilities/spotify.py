@@ -274,7 +274,7 @@ class User:  # Current user's spotify instance
             top_artists.extend(batch["items"][1:])
 
         return top_artists
-    
+
     @cache.cache(strategy=cache.Strategy.timed)
     async def get_playlists(self, playlists: int = 100):
         """Get a user's owned and followed playlists"""
@@ -291,7 +291,7 @@ class User:  # Current user's spotify instance
             offset += 1
 
         return _playlists
-    
+
     @cache.cache(strategy=cache.Strategy.timed)
     async def get_embed(self, url):
         query = urlencode({"url": url})

@@ -55,7 +55,7 @@ class CS35L(Quart):
         self.secret_key = secrets.token_urlsafe(64)
 
         self.current_users = {}
-                     
+
     def run(self):
         super().run(host=config.WEB.host, port=config.WEB.port, loop=self.loop)
 
@@ -75,11 +75,13 @@ async def get_user():
             return user
         return await spotify.User.from_id(user_id, app)
 
+
 async def get_user_from_id(user_id):
     user = app.current_users.get(user_id)
     if user:
         return user
     return await spotify.User.from_id(user_id, app)
+
 
 def login_required():
     def decorator(func):
@@ -118,23 +120,26 @@ async def _tasked_requests(user):
     await user.get_recent_tracks()
     await user.get_liked_tracks()
 
+
 @app.before_first_request
 async def speed_loader():
     user = await get_user()
     if user:
         app.loop.create_task(_tasked_requests(user))
 
+
 @app.after_request
 def after_request(response):
-  response.headers.add('Access-Control-Allow-Origin', '*')
-  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-  return response
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+    return response
 
 
 @app.route("/")
 async def home():
     return await render_template("index.html")
+
 
 @app.route("/faqs")
 async def faq_page():
@@ -203,23 +208,18 @@ async def spotify_liked():
 ###############
 @app.route("/_get_user_stats")
 async def _get_user_stats():
-    user_id = request.args.get('user_id')
+    user_id = request.args.get("user_id")
     if not user_id:
         abort(400, "Must supply user_id query parameter!")
     user = await get_user_from_id(user_id)
     if not user:
         abort(404, "Invalid user, user must log in to spotify first.")
-    
 
     rtracks = await user.get_recent_tracks(10)
     ttracks = await user.get_top_tracks(10)
     artists = await user.get_top_artists(10)
 
-    return {
-        "recent": rtracks["items"],
-        "top_tracks": ttracks,
-        "top_artists": artists
-    }
+    return {"recent": rtracks["items"], "top_tracks": ttracks, "top_artists": artists}
 
 
 @app.route("/_upload/")
@@ -233,10 +233,10 @@ async def _upload_audio():
         form = await request.form
         files = await request.files
         try:
-            audio = files['audio_file'].read()
-            title = form['title']
-            owner_id = form['owner_id']
-            tag = form['tag']
+            audio = files["audio_file"].read()
+            title = form["title"]
+            owner_id = form["owner_id"]
+            tag = form["tag"]
         except:
             abort(400, "Malformed form received")
         fields = (title, owner_id, audio, tag)
@@ -250,33 +250,36 @@ async def _upload_audio():
         return "successfully uploaded audio"
     else:
         return await render_template("upload.html")
-    
+
 
 @app.route("/_get_audio_metadata")
 async def _get_audio_metadata():
     data = await app.db.fetch_audio_metadata()
-    return [{"title": record['title'], "tag": record["tag"]} for record in data]
+    return [{"title": record["title"], "tag": record["tag"]} for record in data]
+
 
 @app.route("/_get_user_playlist_names")
 async def _get_user_playlist_names():
-    user_id = request.args.get('user_id')
+    user_id = request.args.get("user_id")
     if not user_id:
         abort(400, "Must supply user_id query parameter!")
     user = await get_user_from_id(user_id)
     if not user:
         abort(404, "Invalid user, user must log in to spotify first.")
-    
+
     data = await user.get_playlists()
     return {p["id"]: p["name"] for p in data}
-    
+
+
 @app.route("/_get_embed")
 @login_required()
 async def get_embed():
     user = await get_user()
-    embed = await user.get_embed("https://open.spotify.com/track/1B6JNX4RQh0Ou9GaQOeCDp?si=12da6561099544e1")
+    embed = await user.get_embed(
+        "https://open.spotify.com/track/1B6JNX4RQh0Ou9GaQOeCDp?si=12da6561099544e1"
+    )
     return embed["html"]
+
 
 if __name__ == "__main__":
     app.run()
-
-

@@ -11,6 +11,7 @@ import logging
 
 log = logging.getLogger("web")
 
+
 class DB:
     """
     Attempts to create a postgres database connection,
@@ -90,7 +91,7 @@ class DB:
                 token_info = json.loads(token_info)
 
         return token_info
-    
+
     async def insert_audio(self, title, owner_id, audio, tag):
         query = """
                 INSERT INTO audio_files

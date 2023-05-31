@@ -11,6 +11,7 @@ from functools import wraps
 
 CACHE = {}
 
+
 def _get_cached_value(id_or_ids):
     if type(id_or_ids) is list:
         return [CACHE[_id] for _id in id_or_ids]
