@@ -1,8 +1,12 @@
 import './MyStats.css';
+//pass user_id as a query param into the get request 
 
-//Able to get userId from the getCookie() as well. 
 let userId = "";
+//Fetch (url) localhost://4000
+//method: GET
 
+
+//Get request confirmed that get cookie works. 
 //Function to get the user_id for the cookie. (Find which user's statistics to show)
 function getCookie(){
     var key, value, i;
@@ -24,9 +28,24 @@ function getCookie(){
     }
 }
 
+//Trying to put as query param into get_request. 
+async function postJSON(data) {
+    const response = await fetch("http://localhost:3000/", {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+  
+    const result = await response.json();
+}
+    
 
 function myStats() {
     getCookie();
+    //URL
+    
     return (
         <div
             style={{
