@@ -201,7 +201,7 @@ async def spotify_liked():
 ###############
 ## INTERNALS ##
 ###############
-@app.route("/_get_stats")
+@app.route("/_get_user_stats")
 async def _get_user_stats():
     user_id = request.args.get('user_id')
     if not user_id:
@@ -259,7 +259,6 @@ async def _get_audio_metadata():
 
 @app.route("/_get_user_playlist_names")
 async def _get_user_playlist_names():
-    print(request.cookies["user_id"])
     user_id = request.args.get('user_id')
     if not user_id:
         abort(400, "Must supply user_id query parameter!")
