@@ -216,7 +216,7 @@ async def _get_user_stats():
     artists = await user.get_top_artists(10)
 
     return {
-        "recent": rtracks,
+        "recent": rtracks["items"],
         "top_tracks": ttracks,
         "top_artists": artists
     }
