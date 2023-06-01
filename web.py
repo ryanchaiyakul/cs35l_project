@@ -50,19 +50,13 @@ class CS35L(Quart):
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
 
-        self.loop.run_until_complete(self.set_sessions())
+        self.http = http.Utils()
         self.db = database.DB(self.loop)
         self.secret_key = secrets.token_urlsafe(64)
-
         self.current_users = {}
 
     def run(self):
         super().run(host=config.WEB.host, port=config.WEB.port, loop=self.loop)
-
-    async def set_sessions(self):
-        if not hasattr(self, "http"):
-            self.http = http.Utils(aiohttp.ClientSession())
-
 
 app = CS35L(__name__)
 
@@ -271,13 +265,25 @@ async def _get_user_playlist_names():
     return {p["id"]: p["name"] for p in data}
 
 
-@app.route("/_get_embed")
+@app.route("/_get_embed_html")
 @login_required()
-async def get_embed():
+async def get_embed_html():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
+
+    spotify_url = request.args.get("url")
+    if not spotify_url:
+        abort(400, "Must supply url query parameter!")
     user = await get_user()
-    embed = await user.get_embed(
-        "https://open.spotify.com/track/1B6JNX4RQh0Ou9GaQOeCDp?si=12da6561099544e1"
-    )
+
+    embed = await user.get_embed("spotify_url")
+
+    if not embed.get("html"):
+        abort(400, "Invalid spotify url")
     return embed["html"]
 
 
