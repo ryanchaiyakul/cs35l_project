@@ -1,25 +1,24 @@
 #wrapper {
     width: '100vw';
     border: 1px solid rgb(158, 79, 164);
-    overflow: auto;
     position: relative;
     height: '100vh';
+    overflow:scroll;
 }
 
 
 #first {
-    position:absolute;
-    width: 33%;
-    height:89%;
+    position:relative;
+
+    margin-top: 15vh;
+    width: 98vw;
+    height: 90vh;
     float: left;
-    overflow:hidden;
     /* border: 1px solid red; */
 }
 
 #firstTitle {
     display:flex;   
-
-
     /* Put text vertically and horizontally center */
     justify-content: center;
     align-items: center;
@@ -41,12 +40,12 @@
 /* flows left of the third column */
 #second {
     position:absolute;
-    /*To make the height match the 89%, in which only works in absolute*/
-    width: 33%;
-    height: 89%;
-
-    margin-left: 33%;  
+    width: 98vw;
+    height: 90vh;
+    margin-top: 130vh;
     float:left;
+    overflow:hidden;
+    /* border: 1px solid white; */
     /* border: 1px solid green; */
 }
 #secondTitle {
@@ -59,6 +58,7 @@
 
     justify-content: center;
     align-items: center;
+    overflow:hidden;
 
     display:flex;   
 
@@ -82,25 +82,21 @@
 #third {
     position:absolute;
     font-size: 30px;
-    margin-left: 66%;               /*To make the height match the 80%, in which only works in absolute*/
-    width: 33%;
-    height: 80%;
+    width: 98vw;
+    margin-top: 220vh;
+    height: 90vh;
     float:right;
-    border: 1px solid white;
+    overflow:hidden;
+    /* border: 1px solid white; */
 }
 #thirdTitle {
     display:flex;
-    
     height:80px;
     width: auto;
-
-
     font-size: 30px;
-
-
     justify-content: center;
     align-items: center;
-    border: 1px solid grey;
+    /* border: 1px solid grey; */
 }
 
 /* Responsible for all the data_entries within the chart */
@@ -129,4 +125,22 @@
 
 .sub-font{
     font-family: 'Open Sans', cursive;
+}
+
+
+.header {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    padding: 0px 0;
+    position: fixed;
+    background-color: #f5f0e1;
+
+    /* Fixes the position */
+    z-index:1;
+}
+
+li {
+    cursor: pointer;
+    list-style-type:none;
 }

@@ -1,6 +1,8 @@
 import './MyStats.css';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+//Easy scrollable
+import Header from "./header";
 
 
 //pass user_id as a query param into the get request 
@@ -24,7 +26,7 @@ function getCookie() {
 }
 
 
-function getURL(data){
+function getURL(data) {
     console.log("RUNNING FUNCTION");
     // URL = data.track.external_urls;
     URL = "LJSDF";
@@ -41,12 +43,10 @@ async function fetchData() {
     recentlyPlayed = response.data;
     console.log("Returning ", response.data);
 
-    
+
     return response.data;
 
 }
-
-
 
 
 
@@ -86,76 +86,65 @@ export default function MyStats() {
 
         //Get Recently Played List (After 40 characters, it will cut off (replace with ...))
         for (let i = 0; i < 9; i++) {
-            if(i >= data.recent.length){
+            if (i >= data.recent.length) {
                 recentlyPlayed[i] = "Listen to more songs to add!";
             }
-            else{
-                if(data.recent[i].track.name.length > 40){
+            else {
+                if (data.recent[i].track.name.length > 40) {
                     recentlyPlayed[i] = data.recent[i].track.name.substring(0, 37) + "...";
                 }
-                else{
+                else {
                     recentlyPlayed[i] = data.recent[i].track.name;
-                    console.log("Song: ", i, + ""+ data.recent[i].track.name);
+                    console.log("Song: ", i, + "" + data.recent[i].track.name);
                 }
             }
         }
 
+
+
         return (
-            <div
-                style={{
-                    backgroundColor: '#50586C',
-                }}
-                className="App" >
-    
-    
+            <div style={{ backgroundColor: '#1e3d59', height: '315vh' }} className="App" >
+                <Header />
+
                 <div
-                    style={{ color: '#DCE2F0', fontSize: 50, padding: 0 }}
-                    className="card">
-                    <span className="font-link">
-                        My Stats
-                    </span>
-                </div>
-    
-    
-                <div
-                    style={{ color: '#C4A484', fontSize: 20, marginLeft: 'auto' }}
+                    style={{ color: '#f5f0e1', fontSize: 20, top:'0px' }}
                     className="card" id="first">
-                    
-                      
+
+
                     {/* Title */}
-                    <span className = "font-link" id = "firstTitle">
+                    <span className="font-link" id="firstTitle">
                         Recently Played
                     </span>
-    
+
                     {/* Think about how many elements for each row */}
-                    <span className="font-link" id="data_entry"> <a class = "a" href={data.recent[0].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[0]} </a></span>
-                    <span className="font-link" id="data_entry"> <a class = "a" href={data.recent[1].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[1]} </a> </span>
-                    <span className="font-link" id="data_entry"> <a class = "a" href={data.recent[2].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[2]} </a> </span>
-                    <span className="font-link" id="data_entry"> <a class = "a" href={data.recent[3].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[3]} </a> </span>
-                    <span className="font-link" id="data_entry"> <a class = "a" href={data.recent[4].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[4]} </a></span>
-                    <span className="font-link" id="data_entry"> <a class = "a" href={data.recent[5].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[5]} </a> </span>
-                    <span className="font-link" id="data_entry"> <a class = "a" href={data.recent[6].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[6]} </a> </span>
-                    <span className="font-link" id="data_entry"> <a class = "a" href={data.recent[7].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[7]} </a></span>
-                    <span className="font-link" id="data_entry"> <a class = "a" href={data.recent[8].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[8]} </a></span>
+                    <span className="font-link" id="data_entry"> <a class="a" href={data.recent[0].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[0]} </a></span>
+                    <span className="font-link" id="data_entry"> <a class="a" href={data.recent[1].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[1]} </a> </span>
+                    <span className="font-link" id="data_entry"> <a class="a" href={data.recent[2].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[2]} </a> </span>
+                    <span className="font-link" id="data_entry"> <a class="a" href={data.recent[3].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[3]} </a> </span>
+                    <span className="font-link" id="data_entry"> <a class="a" href={data.recent[4].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[4]} </a></span>
+                    <span className="font-link" id="data_entry"> <a class="a" href={data.recent[5].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[5]} </a> </span>
+                    <span className="font-link" id="data_entry"> <a class="a" href={data.recent[6].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[6]} </a> </span>
+                    <span className="font-link" id="data_entry"> <a class="a" href={data.recent[7].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[7]} </a></span>
+                    <span className="font-link" id="data_entry"> <a class="a" href={data.recent[8].track.external_urls.spotify} style={{ textDecoration: 'none' }}> {recentlyPlayed[8]} </a></span>
 
                 </div>
-    
-    
+
+
                 {/* Second Column */}
                 <div style={{ color: '#F0EDCC', fontSize: 20 }}
                     className="card" id="second" >
-    
+
                     <span className="font-link" id="secondTitle">
                         Favorite Artists
                     </span>
-    
+
                     <span className="font-link" id="data_entry"> Artist 1 </span>
                     <span className="font-link" id="data_entry"> Artist 2 </span>
                     <span className="font-link" id="data_entry"> Artist 3 </span>
                     <span className="font-link" id="data_entry"> Artist 4 </span>
                 </div>
-    
-    
+
+
                 {/* Third Column */}
                 <div
                     style={{ color: '#F0EDCC', fontSize: 20 }}
@@ -163,21 +152,21 @@ export default function MyStats() {
                     <span className="font-link" id="thirdTitle">
                         Favorite Tracks
                     </span>
-                    <span className="font-link" id="data_entry"> Artist 1 </span>
-                    <span className="font-link" id="data_entry"> Artist 2 </span>
-                    <span className="font-link" id="data_entry"> Artist 3 </span>
-                    <span className="font-link" id="data_entry"> Artist 4 </span>
+                    <span className="font-link" id="data_entry"> Track 1 </span>
+                    <span className="font-link" id="data_entry"> Track 2 </span>
+                    <span className="font-link" id="data_entry"> Track 3 </span>
+                    <span className="font-link" id="data_entry"> Track 4 </span>
                 </div>
-    
-    
-    
-    
+
+
+
+
             </div>
         );
     }
 
 
-    
-    
-   
+
+
+
 }
