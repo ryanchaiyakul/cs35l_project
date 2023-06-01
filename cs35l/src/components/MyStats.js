@@ -16,7 +16,6 @@ function getCookie() {
 
 
     for (i = 0; i < cookieArray.length; i++) {
-        console.log(cookieArray);
         key = cookieArray[i].slice(0, cookieArray[i].indexOf("="));
         value = cookieArray[i].slice(cookieArray[i].indexOf("=") + 1);
         if (key == 'user_id') {
@@ -34,33 +33,15 @@ async function fetchData(){
     var recentlyPlayed = [];
 
     
-
-    axios.get(`http://localhost:4000/_get_user_stats`, { params: { user_id: getCookie() } })
-        .then((response) => {
-            console.log("Size: ", response.data.recent.length)
-            for (let i = 0; i < response.data.recent.length; i++) {
-                recentlyPlayed[i] = response.data.recent[i].track.name;
-                console.log("Recently played ", recentlyPlayed[i]);
-            }
-            return response.data;
-        })
-        //Handle Error
-        .catch(error => {
-            if (error.response) {
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-            }
-            else {
-                console.log('Other error', error.message);
-            }
-        });
-
-
-        return recentlyPlayed;
+    var response = await axios.get(`http://localhost:4000/_get_user_stats`, {params: { user_id: getCookie() } });
+    recentlyPlayed = response.data;
+    console.log("Returning ", response.data);
+ 
+    //Return the formulated data    
+    return response.data;
+        
+       
 }
-
-
 
 
 
@@ -70,30 +51,34 @@ export default function MyStats()  {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    //Render data
+    //Render data to gather information
+    var recentlyPlayed = [];
     useEffect(() => {
         async function check(){
             try {
                 setLoading(true);
                 const data = await fetchData();
-                console.log("Data received");
+                let fetchedData = await fetchData();
+
+
+
                 setData(data);
-                setLoading(false);
+                console.log("Data I got: " , fetchedData);
+                setLoading(false);  
               } 
               //Error
               catch (error) {
                 setLoading(false);
-                console.log("ERROR!");
+                console.log("ERROR!", error);
               }
         }
         check();
      }, []);
-
-
+   
 
      //Succesfully rendered all the data
      if(!loading && data){
-        console.log("Loading complete");
+        console.log("Data received: ", data);
      }
     
       
