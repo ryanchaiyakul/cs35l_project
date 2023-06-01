@@ -1,6 +1,6 @@
 import './MyStats.css';
 import axios from 'axios';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 
 //pass user_id as a query param into the get request 
@@ -28,61 +28,72 @@ function getCookie() {
 //Retrieve recetnly played music
 
 //Fetch data
-async function fetchData(){
+async function fetchData() {
     //Equivalent to http://localhost:4000/_get_user_stats?user_id=getCookie()
     var recentlyPlayed = [];
 
-    
-    var response = await axios.get(`http://localhost:4000/_get_user_stats`, {params: { user_id: getCookie() } });
+
+    var response = await axios.get(`http://localhost:4000/_get_user_stats`, { params: { user_id: getCookie() } });
     recentlyPlayed = response.data;
     console.log("Returning ", response.data);
- 
+
     //Return the formulated data    
     return response.data;
-        
-       
+
+
 }
 
 
 
 
-export default function MyStats()  {
+export default function MyStats() {
     //Render data before filling them in
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
 
     //Render data to gather information
-    var recentlyPlayed = [];
     useEffect(() => {
-        async function check(){
+        async function check() {
             try {
                 setLoading(true);
                 const data = await fetchData();
                 let fetchedData = await fetchData();
 
-
-
                 setData(data);
-                console.log("Data I got: " , fetchedData);
-                setLoading(false);  
-              } 
-              //Error
-              catch (error) {
+                setLoading(false);
+            }
+            //Error
+            catch (error) {
                 setLoading(false);
                 console.log("ERROR!", error);
-              }
+            }
         }
         check();
-     }, []);
-   
+    }, []);
 
-     //Succesfully rendered all the data
-     if(!loading && data){
+
+    //Succesfully rendered all the data
+    var recentlyPlayed = [];
+    var favorite_artists = [];
+    var favorite_track = []
+    if (!loading && data) {
         console.log("Data received: ", data);
-     }
-    
-      
 
+
+        //Get Recently Played List
+        for (let i = 0; i < data.recent.length; i++) {
+            recentlyPlayed[i] = data.recent[i].track.name;
+            console.log("Recently played: " + data.recent[i].track.name);
+        }
+
+        // for (let i = 0; i < data.recent.length; i++) {
+        //     recentlyPlayed[i] = data.recent[i].track.name;
+        //     console.log("Recently played: " + data.recent[i].track.name);
+        // }
+    }
+
+
+    var dataType = 'HELLO';
     return (
         <div
             style={{
@@ -103,16 +114,18 @@ export default function MyStats()  {
             <div
                 style={{ color: '#F0EDCC', fontSize: 20, marginLeft: 'auto' }}
                 className="card" id="first">
+                
+              
+                
 
                 {/* Title */}
-                <span className="font-link" id="firstTitle">
-                    Favorites
+                <span className = "font-link" id = "firstTitle" >
+                    Recently Heard
                 </span>
-
-                <span className="font-link" id="firstData"> Fav 1 </span>
-                <span className="font-link" id="firstData"> Fav 2 </span>
-                <span className="font-link" id="firstData"> Fav 3 </span>
-                <span className="font-link" id="firstData"> Fav 4 </span>
+                <span className="font-link" id="firstData"> {recentlyPlayed[0]} </span>
+                <span className="font-link" id="firstData"> {recentlyPlayed[1]} </span>
+                <span className="font-link" id="firstData"> {recentlyPlayed[2]} </span>
+                <span className="font-link" id="firstData"> {recentlyPlayed[3]} </span>
             </div>
 
 
