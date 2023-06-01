@@ -41,11 +41,13 @@
 /* flows left of the third column */
 #second {
     position:absolute;
-    margin-left: 33%;               /*To make the height match the 80%, in which only works in absolute*/
+    /*To make the height match the 89%, in which only works in absolute*/
     width: 33%;
-    height: 80%;
+    height: 89%;
+
+    margin-left: 33%;  
     float:left;
-    border: 1px solid green;
+    /* border: 1px solid green; */
 }
 #secondTitle {
     display:flex;
@@ -58,6 +60,20 @@
     justify-content: center;
     align-items: center;
 
+    display:flex;   
+
+
+    /* Put text vertically and horizontally center */
+    justify-content: center;
+    align-items: center;
+    
+    
+    height: 70px;
+    width: auto;
+
+    /* Text Styling */
+    font-size: 40px;
+    /* border: 1px solid grey; */
 
     /* border: 1px solid grey; */
 }
