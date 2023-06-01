@@ -1,15 +1,14 @@
 import './MyStats.css';
 import axios from 'axios';
+import React, {useEffect, useState} from 'react';
 
 
 //pass user_id as a query param into the get request 
 
-let userId = "";
 //Fetch (url) localhost://4000
 //method: GET
 
 
-//Get request confirmed that get cookie works. 
 //Function to get the user_id for the cookie. (Find which user's statistics to show)
 function getCookie() {
     var key, value, i;
@@ -21,75 +20,83 @@ function getCookie() {
         key = cookieArray[i].slice(0, cookieArray[i].indexOf("="));
         value = cookieArray[i].slice(cookieArray[i].indexOf("=") + 1);
         if (key == 'user_id') {
-            console.log('userID is ' + value);
+            //console.log('userID is ' + value);
             return value;
         }
     }
 }
 
+//Retrieve recetnly played music
 
-
-//Trying to put as query param into (Which redirection URL?)
-async function fetchStats() {
-    // const response = await fetch("http://localhost:4000/get_user_stats", {
-    //     method: "GET", // or 'PUT'
-    //     body: JSON.stringify(data),
-    //   });
-
-    //Original
-    console.log("Tyring to fetch data")
-    //  console.log("URL: " + `http://localhost:4000/_get_user_stats`, {params: {user_id: '31kdkadqj5weprsc4drjd2o6gnry'}});
-
-    //Original
-    // const response = await axios.get(`http://localhost:4000/_get_user_stats`, {params: {user_id:getCookie()}})
-
+//Fetch data
+async function fetchData(){
     //Equivalent to http://localhost:4000/_get_user_stats?user_id=getCookie()
-    //request.cookies["user_id"]) not activating
+    var recentlyPlayed = [];
+
+    
+
     axios.get(`http://localhost:4000/_get_user_stats`, { params: { user_id: getCookie() } })
         .then((response) => {
-            console.log("Response: ", response.data)
-            console.log("Recently played: " + response.data.recent[0].track.name)
+            console.log("Size: ", response.data.recent.length)
+            for (let i = 0; i < response.data.recent.length; i++) {
+                recentlyPlayed[i] = response.data.recent[i].track.name;
+                console.log("Recently played ", recentlyPlayed[i]);
+            }
+            return response.data;
         })
+        //Handle Error
         .catch(error => {
-            // Handle error
             if (error.response) {
-
                 console.log(error.response.data);
                 console.log(error.response.status);
                 console.log(error.response.headers);
-            } else {
-                // Something happened in setting up the request that triggered an Error
+            }
+            else {
                 console.log('Other error', error.message);
             }
         });
 
 
-
-
-
-
-    // console.log("The data retrieved: " + response.data.recent.length);
-
-    //Specify query_parameters
-    //user.get_recent_tracks(10)
-    // ttracks = await user.get_top_tracks(10)
-    // artists = await user.get_top_artists(10)
-    //console.log(response);
-
-    //const result = await response.json();
-    //console.log("Result: " + result);
-    // if(result.ok){
-    //     console.log("Succesfully retrieved the stats")
-    // }
-    // else{
-    //     console.log("Couldn't retrieve the stats");
-    // }
+        return recentlyPlayed;
 }
 
 
-function myStats() {
-    fetchStats()
-    //URL
+
+
+
+
+export default function MyStats()  {
+    //Render data before filling them in
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    //Render data
+    useEffect(() => {
+        async function check(){
+            try {
+                setLoading(true);
+                const data = await fetchData();
+                console.log("Data received");
+                setData(data);
+                setLoading(false);
+              } 
+              //Error
+              catch (error) {
+                setLoading(false);
+                console.log("ERROR!");
+              }
+        }
+        check();
+     }, []);
+
+
+
+     //Succesfully rendered all the data
+     if(!loading && data){
+        console.log("Loading complete");
+     }
+    
+      
 
     return (
         <div
@@ -144,11 +151,9 @@ function myStats() {
             <div
                 style={{ color: '#F0EDCC', fontSize: 20 }}
                 className="card" id="third" >
-
                 <span className="font-link" id="thirdTitle">
                     Listening Hours
                 </span>
-
                 <span className="font-link" id="firstData"> Artist 1 </span>
                 <span className="font-link" id="firstData"> Artist 2 </span>
                 <span className="font-link" id="firstData"> Artist 3 </span>
@@ -161,4 +166,3 @@ function myStats() {
         </div>
     );
 }
-export default myStats
