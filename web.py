@@ -47,7 +47,7 @@ handler.setFormatter(fmt)
 class CS35L(Quart):
     def __init__(self, name):
         super().__init__(name)
-        self.loop = asyncio.get_event_loop()
+        self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
 
         self.loop.run_until_complete(self.set_sessions())
