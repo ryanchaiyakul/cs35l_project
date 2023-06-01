@@ -3,7 +3,7 @@ import { Link } from "react-scroll";
 const Header = () => {
     return (
         <nav>
-            <ul className="header" style={{ height: '10vh', marginTop:'0px', fontSize:'20px', color:"#ff6e40"}}>
+            <ul className="header" style={{ height: '7vh', marginTop:'0px', fontSize:'25px', color:"#ff6e40"}}>
                 <li>
                     <Link
                         activeClass="active"
@@ -12,7 +12,8 @@ const Header = () => {
                         smooth={true}
                         offset={-70}
                         duration={500} 
-                        className="font-link"
+                        
+                        className="font-oxygen"
                     >
                     Recently Played
 
@@ -26,7 +27,7 @@ const Header = () => {
                         smooth={true}
                         offset={-62}
                         duration={500}
-                        className="font-link"
+                        className="font-oxygen"
 
                     >
                         Favorite Artists
@@ -40,8 +41,7 @@ const Header = () => {
                         smooth={true}
                         offset={-62}
                         duration={500}
-                        className="font-link"
-
+                        className="font-oxygen"
                     >
                         Favorite Tracks
                     </Link>

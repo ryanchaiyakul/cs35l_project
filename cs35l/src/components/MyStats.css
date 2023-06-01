@@ -9,8 +9,7 @@
 
 #first {
     position:relative;
-
-    margin-top: 15vh;
+    margin-top: 13vh;
     width: 98vw;
     height: 90vh;
     float: left;
@@ -68,7 +67,6 @@
     align-items: center;
     
     
-    height: 70px;
     width: auto;
 
     /* Text Styling */
@@ -83,7 +81,7 @@
     position:absolute;
     font-size: 30px;
     width: 98vw;
-    margin-top: 220vh;
+    margin-top: 250vh;
     height: 90vh;
     float:right;
     overflow:hidden;
@@ -127,6 +125,9 @@
     font-family: 'Open Sans', cursive;
 }
 
+.font-oxygen{
+    font-family: 'Oxygen Mono';
+}
 
 .header {
     display: flex;
@@ -139,6 +140,7 @@
     /* Fixes the position */
     z-index:1;
 }
+
 
 li {
     cursor: pointer;
