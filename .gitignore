@@ -3,6 +3,7 @@ env
 .vscode
 **.DS_Store
 **__pycache__
+**.json
 
 # secrets file
 config.py
