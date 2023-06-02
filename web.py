@@ -217,6 +217,16 @@ async def _get_user_stats():
 
     return {"recent": rtracks["items"], "top_tracks": ttracks, "top_artists": artists}
 
+@app.route("/_get_user_recommendations")
+async def _get_recommendations():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
+    data = await user.get_recommendations(limit=10);
+    return data["tracks"]
 
 @app.route("/_upload/")
 async def upload():
