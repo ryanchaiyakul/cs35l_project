@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 //Easy scrollable
 import Header from "./header";
-
+import MyRecommendations from './MyRecommendations';
 
 //pass user_id as a query param into the get request 
 
@@ -54,6 +54,7 @@ const MyStats = ({ navigation }) => {
     //Render data before filling them in
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const[goToStats, setGotoStats] =  useState(false);
 
     //Render data to gather information
     useEffect(() => {
@@ -83,10 +84,16 @@ const MyStats = ({ navigation }) => {
 
     var favorite_artists = [];
     var favorite_artists_URL = [];
-    
+
     var favorite_track = [];
     var favorite_track_URL = [];
-    
+
+    if(goToStats){
+        console.log("Going to stats page");
+        // return <MyRecommendations/>
+        // return <Navigate to="/MyStats"/>
+    }
+
     if (!loading && data) {
         // console.log("Data received: ", data);
 
@@ -130,7 +137,7 @@ const MyStats = ({ navigation }) => {
             if (i >= data.top_artists.length) {
                 favorite_artists[i] = "";
                 favorite_artists_URL[i] = "";
-                
+
             }
             else {
                 favorite_artists_URL[i] = data.top_artists[i].external_urls.spotify;
@@ -150,13 +157,17 @@ const MyStats = ({ navigation }) => {
 
 
         return (
+
             <div style={{ backgroundColor: '#1e3d59', height: '360vh' }} className="App" >
                 <Header />
 
                 <div
-                    style={{ color: '#ff6e40', fontSize: 20, top:'0px' }}
+                    style={{ color: '#ff6e40', fontSize: 20, top: '0px' }}
                     className="card" id="first">
 
+                    <button onClick={() => { setGotoStats(true); }}>
+                        Go to Recommendations
+                    </button>
 
                     {/* Title */}
                     <span className="font-link" id="firstTitle">
