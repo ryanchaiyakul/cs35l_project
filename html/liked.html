@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <!-- Bootstrap + Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+* {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+
+.playlist-button-box {
+  text-align: center;
+  padding: 20px;
+}
+
+.playlist-button {
+  background-color: #15b8ae;
+  border-color: #017b91;
+}
+
+.playlist-button:hover {
+  background-color: #017b91;
+  border-color: #017b91;
+}
+
+.play-pause:hover {
+    cursor: pointer;
+}
+.name-and-logo {
+  display: flex;
+  padding: 10px;
+}
+
+.table-box {
+  margin: 0 auto;
+  width: 100%;
+}
+
+.table-name-box {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: start;
+}
+.table-name {
+  margin: 0;
+  padding: 0 10px;
+  color: #edf2f4;
+}
+
+.select-box {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  margin-left: auto;
+  padding: 5px 10px;
+}
+
+.time-select-buttons {
+  padding-bottom: 10px;
+  color: #60778c;
+}
+
+.time-select-buttons a {
+  padding: 0 10px;
+}
+.time-select-buttons .active {
+  color: #cacdd1;
+}
+
+.table {
+  color: #edf2f4;
+  width: 100%;
+  margin: 0;
+}
+.table tr {
+   text-align: left;
+}
+.table th:first-child {
+  text-align: center;
+}
+
+.rows:hover {
+  background-color: #ffffff20;
+}
+
+.container {
+  width: 50px;
+  height: 50px;
+  float: left;
+  position: relative;
+}
+.index {
+  position: relative;
+  width: 66px;
+}
+
+.invisible {
+  opacity: 0;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  transition: 0.3s ease;
+  background-color: #00000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cover-td {
+  width: 50px;
+}
+.cover {
+  width: 50px;
+  height: 50px;
+}
+
+.cover img {
+  width: 100%;
+}
+
+.small-play-button {
+  opacity: 0;
+  background: #00000000;
+  font-size: 25px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
+  color: #ffffff;
+}
+
+
+.overlay h4 {
+  padding: 0;
+  color: #FFFFFF;
+  font-size: 20px;
+  margin: 0;
+}
+.rows:hover .number {
+  opacity: 0;
+}
+
+.rows:hover .fa-play,
+.fa-pause {
+  opacity: 1;
+}
+
+@media only screen and (max-width: 992px) {
+  .unseen {
+    display: none;
+  }
+  .select-box {
+    width: 100%;
+    justify-content: start;
+  }
+  .select-box select {
+    width: 100%;
+  }
+  td {
+    font-size: 12px;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="table-box bg-dark table-responsive">
+    <div class="header d-flex flex-wrap">
+        <div class="name-logo-and-buttons">
+            <div class="name-and-logo">
+                <div class="table-name-box">
+                    <h3 class="table-name">Liked Tracks</h3>
+                </div>
+            </div>
+        </div>
+        <div class="select-box">
+            <select class="form-select form-select-sm table-sort" data-table-id="1">
+                <option selected value="order">Sort by track order</option>
+                <option value="name">Sort by track name</option>
+                <option value="artist">Sort by artists</option>
+                <option value="album">Sort by album</option>
+                <option value="date">Sort by release date (oldest to newest)</option>
+                <option value="duration">Sort by track length (short to long)</option>
+                <option value="popularity">Sort by track popularity (least to most)</option>
+                <option value="random">Sort randomly</option>
+            </select>
+        </div>
+    </div>
+    <table id="1" class="table align-middle">
+        <thead>
+            <tr>
+                <th class="rank" scope="col">#</th>
+                <th scope="col">Cover</th>
+                <th scope="col">Track</th>
+                <th scope="col">Artist</th>
+                <th class="unseen" scope="col">Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for track in tracks %}
+            <tr class="rows" data-track="{{track.json}}">
+
+                <th class="index" scope="row">
+                    <div class="overlay">
+                        <h4 class="number">{{loop.index}}</h4>
+                        <span class="icon play-pause">
+                            <i class="fa fa-play small-play-button"></i>
+                            <audio class="audio" src="{{track.preview}}"></audio>
+                        </span>
+                    </div>
+                </th>
+                <td>
+                    <div class="cover">
+                        <a href="{{track['raw']['album']['external_urls']['spotify']}}" target="_blank"><img src="{{track.cover}}" /></a>
+                    </div>
+                </td>
+                <td>
+                    <a href="{{track.url}}" class="link-light track">
+                        {{track.name}}
+                    </a>
+                </td>
+                <td>
+                    {% for artist in track.artists %}
+                    <a class="link-light" href="{{artist['external_urls']['spotify']}}">{{artist['name']}}</a>
+                    {% endfor %}
+                </td>
+                <td class="unseen">{{track.duration}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script>
+$(".table-sort").on("change", function () {
+    var selection = $(this).val();
+    var tableID = "#" + $(this).data("table-id")
+    var rows = $(tableID).children("tbody").children("tr");
+    rows.sort(function (a, b) {
+        var trackA = $(a).data("track");
+        var trackB = $(b).data("track");
+
+        if (selection == "artist") {
+            var valueA = trackA["artists"][0]["name"].toLowerCase();
+            var valueB = trackB["artists"][0]["name"].toLowerCase();
+        }
+
+        else if (selection == "album") {
+            var valueA = trackA["album"]["name"].toLowerCase();
+            var valueB = trackB["album"]["name"].toLowerCase();
+        }
+
+        else if (selection == "order") {
+            var valueA = trackA["rank"];
+            var valueB = trackB["rank"];
+        }
+
+        else if (selection == "name") {
+            var valueA = trackA["name"].toLowerCase();
+            var valueB = trackB["name"].toLowerCase();
+        }
+
+        else if (selection == "date") {
+            var valueA = new Date(trackA["album"]["release_date"]);
+            var valueB = new Date(trackB["album"]["release_date"]);
+
+        }
+
+        else if (selection == "duration") {
+            var valueA = trackA["duration_ms"];
+            var valueB = trackB["duration_ms"];
+        }
+
+        else if (selection == "popularity") {
+            var valueA = trackA["popularity"];
+            var valueB = trackB["popularity"];
+        }
+
+        else if (selection == "random") {
+            var valueA = Math.random();
+            var valueB = Math.random();
+        }
+
+        if (valueA > valueB) {
+            return 1;
+        } else if (valueA < valueB) {
+            return -1;
+        } else {
+            return 0;
+        }
+    });
+
+    $.each(rows, function (index, row) {
+        $(tableID).children("tbody").append(row);
+    });
+});
+
+$(function () {
+    $(document).on("click", ".play-pause", function () {
+        var audio = $(this).children("audio");
+        if (audio[0].paused) {
+            if (window.audio !== undefined) {
+                // audio already existed, pause it.
+                pause();
+            }
+            window.audio = audio;
+            play();
+        } else {
+            window.audio = audio;
+            pause();
+        }
+    });
+});
+
+
+$("audio").on({
+    play: function () {
+        // the audio is playing!
+        $(window.audio)
+            .siblings("i")
+            .removeClass("fa-play")
+            .addClass("fa-pause");
+        $(window.audio).parents("span").siblings("h4").addClass("invisible")
+        console.log($(window.audio).parents("span").siblings("h4"))
+    },
+    pause: function () {
+        // the audio is paused!
+        $(window.audio)
+            .siblings("i")
+            .removeClass("fa-pause")
+            .addClass("fa-play");
+        $(window.audio).parents("span").siblings("h4").removeClass("invisible")
+    },
+});
+
+function play() {
+    $(window.audio).siblings("i").removeClass("fa-play").addClass("fa-pause");
+    if ($(window.audio[0]).attr("src")) {
+        window.audio.trigger("play");
+    } else {
+        alert("Audio preview unavailable for this track.");
+        $(window.audio)
+            .siblings("i")
+            .removeClass("fa-pause")
+            .addClass("fa-play");
+    }
+}
+function pause() {
+    $(window.audio).siblings("i").removeClass("fa-pause").addClass("fa-play");
+    window.audio.trigger("pause");
+}
+</script>
+</body>
+</html>

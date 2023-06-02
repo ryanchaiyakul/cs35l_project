@@ -1,4 +1,4 @@
-# SETUP GUIDE
+# BACKEND SETUP GUIDE
 
 ## Step 1: Create a virtualenv
 
@@ -51,7 +51,7 @@ Go to https://developer.spotify.com/dashboard and click "Create App"
 Enter the following info:
 App name: CS35L
 App description: Recommendations/Stats/Audio
-Redirect URI: http://localhost:3000/connect
+Redirect URI: http://localhost:4000/connect
 Leave the rest blank and click save.
 
 Copy the client ID and client secret and paste it into the config.py file
@@ -71,7 +71,7 @@ class POSTGRES:
     password = "postgres password" # enter your postgres password here
     host = "localhost" # or your IP address
     port = 5432
-    name = "CS35L"
+    name = "cs35l"
     uri = f"postgres://{user}:{password}@{host}:{port}/{name}"
 
 
@@ -79,5 +79,46 @@ class SPOTIFY:
     client_id = "my client id" # get this from the spotify 
     client_secret = "my client secret" # get this from the spotify 
     redirect_uri = WEB.base_url + "/connect" 
-
 ```
+
+# FRONTEND SETUP GUIDE
+
+## Step 1: Install npm and node
+
+#### Linux
+```console
+myuser@computer:~$ sudo apt install nodejs
+myuser@computer:~$ sudo apt install npm
+```
+
+#### MacOS
+```console
+myuser@computer:~$ brew install node
+```
+
+## Move into the correct directory
+```console
+myuser@computer:~$ cd frontend
+```
+
+## Install dependencies
+```console
+myuser@computer:~$ npm install
+```
+
+## Install dependencies
+```console
+myuser@computer:~$ npm install
+```
+
+## Make frontend build
+```console
+myuser@computer:~$ npm run build
+```
+
+# RUN THE APP
+```console
+python web.py
+```
+
+
