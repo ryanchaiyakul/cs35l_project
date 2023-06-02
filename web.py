@@ -1,5 +1,4 @@
 import os
-import aiohttp
 import asyncio
 import logging
 import secrets
@@ -135,11 +134,6 @@ async def home():
     return await render_template("index.html")
 
 
-@app.route("/faqs")
-async def faq_page():
-    return "Did you really think I'd write a FAQ page? I sure hope you didn't."
-
-
 @app.route("/connect")
 async def spotify_connect():
     code = request.args.get("code")
@@ -220,6 +214,14 @@ async def _get_user_stats():
 async def upload():
     return await render_template("upload.html")
 
+@app.route("/_is_user_valid")
+async def _is_user_valid():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
 
 @app.route("/_upload_audio", methods=["POST", "GET"])
 async def _upload_audio():
@@ -266,7 +268,6 @@ async def _get_user_playlist_names():
 
 
 @app.route("/_get_embed_html")
-# @login_required()
 async def get_embed_html():
     user_id = request.args.get("user_id")
     if not user_id:
