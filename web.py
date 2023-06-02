@@ -49,8 +49,8 @@ class CS35L(Quart):
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
 
-        self.static_folder = "./cs35l/build/static"
-        self.template_folder = "./cs35l/build"
+        self.static_folder = "./frontend/build/static"
+        self.template_folder = "./frontend/build"
 
         self.http = http.Utils()
         self.db = database.DB(self.loop)
