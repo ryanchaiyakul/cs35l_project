@@ -51,7 +51,7 @@ Go to https://developer.spotify.com/dashboard and click "Create App"
 Enter the following info:
 App name: CS35L
 App description: Recommendations/Stats/Audio
-Redirect URI: http://localhost:3000/connect
+Redirect URI: http://localhost:4000/connect
 Leave the rest blank and click save.
 
 Copy the client ID and client secret and paste it into the config.py file
@@ -62,7 +62,7 @@ Copy the client ID and client secret and paste it into the config.py file
 # example config.py file:
 class WEB:
     host = "localhost"
-    port = 3000
+    port = 4000
     base_url = f"http://{host}:{port}"
 
 
