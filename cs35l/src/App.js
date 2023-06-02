@@ -10,15 +10,17 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 function App() {
-  const navigate = useNavigate()
+  //const navigate = useNavigate()
 
   function handleClick() {
     console.log("Navigating to home screen");
-    navigate("/MyStats");
+  //  navigate("/MyStats");
   }
   
   return (
     <div>
+      {/* <MyStats/> */}
+      <MyRecommendations/>
       {/* <Link to="/" exact>
           Home
         </Link>
@@ -33,9 +35,9 @@ function App() {
       {/* My Recommendations
         </Link> */}
 
-      <button type="button" onClick={handleClick}>
+      {/* <button type="button" onClick={handleClick}>
         Go home
-      </button>
+      </button> */}
     </div>
 
     // <Route path="/" component={<MyStats/>} />

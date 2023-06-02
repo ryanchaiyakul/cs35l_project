@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 import Header from "./header";
 
 
-//pass user_id as a query param into the get request 
+//Endpoint =  /_get_user_recommendations
 
 //Fetch (url) localhost://4000
 //method: GET
@@ -31,20 +31,13 @@ function getCookie() {
 }
 
 
-function getURL(data) {
-    console.log("RUNNING FUNCTION");
-    // URL = data.track.external_urls;
-    URL = "LJSDF";
 
-    return URL;
-}
 //Retrieve recetnly played music
-
 //Fetch data
 //Equivalent to http://localhost:4000/_get_user_stats?user_id=getCookie()
 async function fetchData() {
     var recentlyPlayed = [];
-    var response = await axios.get(`http://localhost:4000/_get_user_stats`, { params: { user_id: getCookie() } });
+    var response = await axios.get(`http://localhost:4000/_get_user_recommendations`, { params: { user_id: getCookie() } });
     recentlyPlayed = response.data;
     console.log("Returning ", response.data);
 
@@ -84,7 +77,7 @@ const MyRecommendations = () =>{
 
     if (!loading && data) {
         return (
-            <div style={{ backgroundColor: '#1e3d59', height: '360vh' }} className="App" >
+            <div style={{ backgroundColor: '#1e3d59', height: '100vh' }} className="App" >
                 <div
                     style={{ color: '#ff6e40', fontSize: 20, top: '0px' }}
                     className="card" id="title_component">
