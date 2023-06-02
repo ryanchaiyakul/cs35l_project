@@ -1,21 +1,22 @@
 ##############################
 ## AIOHTTP HELPER FUNCTIONS ##
 ##############################
-
+import aiohttp
 class Utils:
-    def __init__(self, session):
-        self.session = session
+    def __init__(self):
+        pass
 
     async def query(self, url, method="get", res_method="text", *args, **kwargs):
-        async with getattr(self.session, method.lower())(url, *args, **kwargs) as res:
+        session = aiohttp.ClientSession()
+        async with getattr(session, method.lower())(url, *args, **kwargs) as res:
             if res.status == 204:
                 return None  # No content
             try:
-                return await getattr(res, res_method)()
+                res = await getattr(res, res_method)()
             except:
-                print(res)
                 res = await getattr(res, "text")()
-                raise Exception(res)
+        await session.close()
+        return res
 
     async def get(self, url, *args, **kwargs):
         return await self.query(url, "get", *args, **kwargs)

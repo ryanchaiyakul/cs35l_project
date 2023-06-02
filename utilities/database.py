@@ -4,12 +4,14 @@
 
 import os
 import json
+import time
 import config
 import asyncio
 import asyncpg
 import logging
 
 log = logging.getLogger("web")
+
 
 class DB:
     """
@@ -36,7 +38,10 @@ class DB:
         if self.json:
             if not os.path.exists("./db/data.json"):
                 with open("./db/data.json", "w") as fp:
-                    fp.write(r"{}")
+                    fp.write(r'{"users": {}, "audio": {}}')
+            if not os.path.exists("./db/audio_files"):
+                os.makedirs("./db/audio_files")
+
         else:
             # We execute the SQL scripts to make sure we have all our tables.
             with open("./db/scripts.sql", "r", encoding="utf-8") as script:
@@ -46,7 +51,7 @@ class DB:
         if self.json:
             with open("./db/data.json", "r") as fp:
                 db = json.load(fp)
-                db[user_id] = token_info
+                db["users"][user_id] = token_info
             with open("./db/data.json", "w") as fp:
                 json.dump(db, fp, indent=2)
 
@@ -64,7 +69,7 @@ class DB:
         if self.json:
             with open("./db/data.json", "r") as fp:
                 db = json.load(fp)
-                db.pop(user_id, None)
+                db["users"].pop(user_id, None)
             with open("./db/data.json", "w") as fp:
                 json.dump(db, fp, indent=2)
         else:
@@ -78,7 +83,7 @@ class DB:
         if self.json:
             with open("./db/data.json", "r") as fp:
                 db = json.load(fp)
-                token_info = db.get(user_id)
+                token_info = db["users"].get(user_id)
         else:
             query = """
                     SELECT token_info
@@ -90,18 +95,43 @@ class DB:
                 token_info = json.loads(token_info)
 
         return token_info
-    
+
     async def insert_audio(self, title, owner_id, audio, tag):
-        query = """
-                INSERT INTO audio_files
-                (title, owner_id, audio, tag)
-                VALUES ($1, $2, $3, $4)
-                """
-        await self.cxn.execute(query, title, owner_id, audio, tag)
+        if self.json:
+            with open("./db/data.json", "r") as fp:
+                db = json.load(fp)
+                if db["audio"][title]:
+                    raise asyncpg.UniqueViolationError("Duplicate Key")
+                db["audio"][title] = {
+                    "owner_id": owner_id,
+                    "tag": tag,
+                    "insertion": int(time.time())
+                }
+            with open("./db/data.json", "w") as fp:
+                json.dump(db, fp, indent=2)
+            
+            with open(f"./db/audio_files/{title}.mp3", "wb") as fp:
+                fp.write(audio)
+        
+        else:
+            query = """
+                    INSERT INTO audio_files
+                    (title, owner_id, audio, tag)
+                    VALUES ($1, $2, $3, $4)
+                    """
+            await self.cxn.execute(query, title, owner_id, audio, tag)
 
     async def fetch_audio_metadata(self):
+        if self.json:
+            with open("./db/data.json", "r") as fp:
+                db = json.load(fp)
+                data = db["audio"]
+
+            return [{"title": k, "tag": v["tag"]} for k, v in data.items()]
+                
         query = """
                 SELECT title, tag
                 FROM audio_files;
                 """
-        return await self.cxn.fetch(query)
+        data = await self.cxn.fetch(query)
+        return [{"title": record["title"], "tag": record["tag"]} for record in data]
