@@ -1,6 +1,4 @@
 import os
-import json
-import aiohttp
 import asyncio
 import logging
 import secrets
@@ -48,22 +46,16 @@ handler.setFormatter(fmt)
 class CS35L(Quart):
     def __init__(self, name):
         super().__init__(name)
-        self.loop = asyncio.get_event_loop()
+        self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
 
-        self.loop.run_until_complete(self.set_sessions())
+        self.http = http.Utils()
         self.db = database.DB(self.loop)
         self.secret_key = secrets.token_urlsafe(64)
-
         self.current_users = {}
-                     
+
     def run(self):
         super().run(host=config.WEB.host, port=config.WEB.port, loop=self.loop)
-
-    async def set_sessions(self):
-        if not hasattr(self, "http"):
-            self.http = http.Utils(aiohttp.ClientSession())
-
 
 app = CS35L(__name__)
 
@@ -75,11 +67,13 @@ async def get_user():
             return user
         return await spotify.User.from_id(user_id, app)
 
+
 async def get_user_from_id(user_id):
     user = app.current_users.get(user_id)
     if user:
         return user
     return await spotify.User.from_id(user_id, app)
+
 
 def login_required():
     def decorator(func):
@@ -118,6 +112,7 @@ async def _tasked_requests(user):
     await user.get_recent_tracks()
     await user.get_liked_tracks()
 
+
 @app.before_first_request
 async def speed_loader():
     user = await get_user()
@@ -132,13 +127,17 @@ def after_request(response):
   return response
 
 
+@app.after_request
+def after_request(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+    return response
+
+
 @app.route("/")
 async def home():
     return await render_template("index.html")
-
-@app.route("/faqs")
-async def faq_page():
-    return "Did you really think I'd write a FAQ page? I sure hope you didn't."
 
 
 @app.route("/connect")
@@ -197,51 +196,38 @@ async def spotify_liked():
     tracks = await user.get_liked_tracks()
     return str(tracks)
 
-@app.route("/embed/")
-@login_required()
-async def spotify_top_tracks():
-    span = request.args.get("time_range", "short_term")
-    user = await get_user()
-    tracks = await user.get_top_tracks(time_range=span)
-    return str(tracks)
-
-
-@app.route("/embeds/")
-@login_required()
-async def get_embed():
-    user = await get_user()
-    embed = await user.get_embed("https://open.spotify.com/track/1B6JNX4RQh0Ou9GaQOeCDp?si=12da6561099544e1")
-    return embed["html"]
-
 
 ###############
 ## INTERNALS ##
 ###############
-@app.route("/_get_stats")
+@app.route("/_get_user_stats")
 async def _get_user_stats():
-    user_id = request.args.get('user_id')
+    user_id = request.args.get("user_id")
     if not user_id:
         abort(400, "Must supply user_id query parameter!")
     user = await get_user_from_id(user_id)
     if not user:
         abort(404, "Invalid user, user must log in to spotify first.")
-    
 
     rtracks = await user.get_recent_tracks(10)
     ttracks = await user.get_top_tracks(10)
     artists = await user.get_top_artists(10)
 
-    return {
-        "recent": rtracks,
-        "top_tracks": ttracks,
-        "top_artists": artists
-    }
+    return {"recent": rtracks["items"], "top_tracks": ttracks, "top_artists": artists}
 
 
 @app.route("/_upload/")
 async def upload():
     return await render_template("upload.html")
 
+@app.route("/_is_user_valid")
+async def _is_user_valid():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
 
 @app.route("/_upload_audio", methods=["POST", "GET"])
 async def _upload_audio():
@@ -249,15 +235,11 @@ async def _upload_audio():
         form = await request.form
         files = await request.files
         try:
-            print(form)
-            print(files)
-            audio = files['audio_file'].read()
-            title = form['title']
-            owner_id = form['owner_id']
-            tag = form['tag']
-        except Exception as e:
-            print(e)
-            raise
+            audio = files["audio_file"].read()
+            title = form["title"]
+            owner_id = form["owner_id"]
+            tag = form["tag"]
+        except:
             abort(400, "Malformed form received")
         fields = (title, owner_id, audio, tag)
         for field in fields:
@@ -270,15 +252,47 @@ async def _upload_audio():
         return "successfully uploaded audio"
     else:
         return await render_template("upload.html")
-    
+
 
 @app.route("/_get_audio_metadata")
 async def _get_audio_metadata():
     data = await app.db.fetch_audio_metadata()
-    return [{"title": record['title'], "tag": record["tag"]} for record in data]
+    return [{"title": record["title"], "tag": record["tag"]} for record in data]
+
+
+@app.route("/_get_user_playlist_names")
+async def _get_user_playlist_names():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
+
+    data = await user.get_playlists()
+    return {p["id"]: p["name"] for p in data}
+
+
+@app.route("/_get_embed_html")
+async def get_embed_html():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
+
+    spotify_url = request.args.get("url")
+    if not spotify_url:
+        abort(400, "Must supply url query parameter!")
+    user = await get_user()
+
+    embed = await user.get_embed("spotify_url")
+
+    if not embed.get("html"):
+        abort(400, "Invalid spotify url")
+    return embed["html"]
+
 
 if __name__ == "__main__":
     app.run()
-
-
-
