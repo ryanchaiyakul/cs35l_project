@@ -1,8 +1,12 @@
 .App {
   text-align: center;
   min-height: 100vh;
+  overflow: hidden;
 }
-
+/* To hide scroll bar */
+::-webkit-scrollbar {
+  display: none;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;

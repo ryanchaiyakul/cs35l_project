@@ -5,22 +5,27 @@ import './App.css';
 import MyStats from './components/MyStats';
 import MyRecommendations from './components/MyRecommendations'
 
-//Used for navigating between pages
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Navigate } from "react-router-dom";
 
 function App() {
   //const navigate = useNavigate()
 
   function handleClick() {
     console.log("Navigating to home screen");
-  //  navigate("/MyStats");
+    //  navigate("/MyStats");
   }
-  
+
   return (
     <div>
       {/* <MyStats/> */}
       <MyRecommendations/>
+
+      {/* <Routes>
+        <Route path="MyStats" element={<Navigate to="/MyStats"/>} />
+      </Routes> */}
+
       {/* <Link to="/" exact>
           Home
         </Link>

@@ -1,5 +1,4 @@
 import os
-import aiohttp
 import asyncio
 import logging
 import secrets
@@ -19,9 +18,8 @@ from quart import (
     make_response,
 )
 
-
 import config
-from utilities import http, spotify, database
+from backend import http, spotify, database
 
 # Set up our website logger
 MAX_LOGGING_BYTES = 32 * 1024 * 1024  # 32 MiB
@@ -47,21 +45,19 @@ handler.setFormatter(fmt)
 class CS35L(Quart):
     def __init__(self, name):
         super().__init__(name)
-        self.loop = asyncio.get_event_loop()
+        self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
 
-        self.loop.run_until_complete(self.set_sessions())
+        self.static_folder = "./frontend/build/static"
+        self.template_folder = "./frontend/build"
+
+        self.http = http.Utils()
         self.db = database.DB(self.loop)
         self.secret_key = secrets.token_urlsafe(64)
-
         self.current_users = {}
 
     def run(self):
         super().run(host=config.WEB.host, port=config.WEB.port, loop=self.loop)
-
-    async def set_sessions(self):
-        if not hasattr(self, "http"):
-            self.http = http.Utils(aiohttp.ClientSession())
 
 
 app = CS35L(__name__)
@@ -141,14 +137,14 @@ async def home():
     return await render_template("index.html")
 
 
-@app.route("/faqs")
-async def faq_page():
-    return "Did you really think I'd write a FAQ page? I sure hope you didn't."
-
-
 @app.route("/connect")
 async def spotify_connect():
     code = request.args.get("code")
+    user = await get_user()
+
+    if user:  # We already have the user cached, no need to reconnect
+        redirect_location = session.pop("referrer", url_for("home"))
+        return await make_response(redirect(redirect_location))
 
     if not code:  # Need code, redirect user to spotify
         return redirect(spotify.Oauth(app).get_auth_url())
@@ -222,9 +218,31 @@ async def _get_user_stats():
     return {"recent": rtracks["items"], "top_tracks": ttracks, "top_artists": artists}
 
 
+@app.route("/_get_user_recommendations")
+async def _get_recommendations():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
+    data = await user.get_recommendations(limit=10)
+    return data["tracks"]
+
+
 @app.route("/_upload/")
 async def upload():
     return await render_template("upload.html")
+
+
+@app.route("/_is_user_valid")
+async def _is_user_valid():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
 
 
 @app.route("/_upload_audio", methods=["POST", "GET"])
@@ -258,6 +276,18 @@ async def _get_audio_metadata():
     return [{"title": record["title"], "tag": record["tag"]} for record in data]
 
 
+@app.route("/_get_audio_data")
+async def _get_audio_data():
+    title = request.args.get("title")
+    if not title:
+        abort(400, "Must supply title query parameter!")
+
+    audio_data = await app.db.fetch_audio_data(title)
+    if not audio_data:
+        abort(404, "Song title not found in database!")
+    return audio_data
+
+
 @app.route("/_get_user_playlist_names")
 async def _get_user_playlist_names():
     user_id = request.args.get("user_id")
@@ -271,13 +301,24 @@ async def _get_user_playlist_names():
     return {p["id"]: p["name"] for p in data}
 
 
-@app.route("/_get_embed")
-@login_required()
-async def get_embed():
+@app.route("/_get_embed_html")
+async def get_embed_html():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
+
+    spotify_url = request.args.get("url")
+    if not spotify_url:
+        abort(400, "Must supply url query parameter!")
     user = await get_user()
-    embed = await user.get_embed(
-        "https://open.spotify.com/track/1B6JNX4RQh0Ou9GaQOeCDp?si=12da6561099544e1"
-    )
+
+    embed = await user.get_embed("spotify_url")
+
+    if not embed.get("html"):
+        abort(400, "Invalid spotify url")
     return embed["html"]
 
 

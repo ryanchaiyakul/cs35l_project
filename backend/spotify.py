@@ -6,7 +6,7 @@ import time
 import base64
 from urllib.parse import urlencode
 
-from utilities import cache
+from backend import cache
 from config import SPOTIFY
 
 
@@ -184,9 +184,16 @@ class User:  # Current user's spotify instance
         return await self.get(CONSTANTS.API_URL + "me")
 
     @cache.cache(strategy=cache.Strategy.timed)
-    async def get_recommendations(self, limit=100, **kwargs):
-        params = {"limit": limit}
-        params.update(**kwargs)
+    async def get_recommendations(self, limit=100):
+        recents = await self.get_recent_tracks(10)
+
+        tracks = ",".join([t["track"]["id"] for t in recents["items"]][:5])
+        print(tracks)
+
+        params = {
+            "limit": limit,
+            "seed_tracks": tracks,
+        }
         return await self.get(
             CONSTANTS.API_URL + "recommendations?" + urlencode(params)
         )
