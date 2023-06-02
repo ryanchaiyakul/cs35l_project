@@ -1,24 +1,50 @@
 import logo from './logo.svg';
+
+import './components/MyStats';
 import './App.css';
+import MyStats from './components/MyStats';
+import MyRecommendations from './components/MyRecommendations'
+
+//Used for navigating between pages
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+  const navigate = useNavigate()
 
+  function handleClick() {
+    console.log("Navigating to home screen");
+    navigate("/MyStats");
+  }
+  
+  return (
+    <div>
+      {/* <Link to="/" exact>
+          Home
+        </Link>
+
+        <Link to="/MyStats">
+          My Stats
+        </Link>
+
+
+        <Link to="/MyRecommendations">
+          {/* <MyStats/> */}
+      {/* My Recommendations
+        </Link> */}
+
+      <button type="button" onClick={handleClick}>
+        Go home
+      </button>
+    </div>
+
+    // <Route path="/" component={<MyStats/>} />
+    // <Route path="/MyStats" component={<MyStats />} />
+    // <Route path="/MyRecommendations" component={<MyRecommendatio ns />} />
+
+  );
+
+
+
+}
+export default App;

@@ -3,14 +3,19 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import MyStats from './components/MyStats';
-import MyHomescreen from './pages/MyHomescreen';
+import MyRecommendations from './components/MyRecommendations';
 import reportWebVitals from './reportWebVitals';
+
+
+import { BrowserRouter as Router, Route, Link, BrowserRouter } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-     {/* <MyStats/>   Uncomment this for now (Working on homepage*/}
-     <MyHomescreen/> 
+    {/* <MyStats/>   */}
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>
 );
 

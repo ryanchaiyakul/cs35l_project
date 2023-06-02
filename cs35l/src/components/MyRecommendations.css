@@ -1,0 +1,24 @@
+/* css for the homescreen page */
+
+#title_component {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    height: 15vh;
+    padding: 0px 0;
+    /* background-color: #000000; */
+}
+
+
+#title_style{
+    display:flex;   
+    /* Put text vertically and horizontally center */
+    justify-content: center;
+    align-items: center;
+    
+    height: 70px;
+    width: auto;
+    
+    /* Text Styling */
+    font-size: 40px;
+}

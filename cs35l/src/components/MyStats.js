@@ -50,7 +50,7 @@ async function fetchData() {
 
 
 
-export default function MyStats() {
+const MyStats = ({ navigation }) => {
     //Render data before filling them in
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -221,9 +221,5 @@ export default function MyStats() {
             </div>
         );
     }
-
-
-
-
-
 }
+export default MyStats;

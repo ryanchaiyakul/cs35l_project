@@ -1,9 +1,0 @@
-/* css for the homescreen page */
-
-.title_component {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    padding: 0px 0;
-    background-color: #f5f0e1;
-}
