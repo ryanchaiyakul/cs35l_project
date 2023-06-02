@@ -7,6 +7,9 @@
 
 !package.json
 **.config.*
+
+!package.json
+**.config.*
 # secrets file
 config.py
 # json database file

@@ -62,7 +62,7 @@ Copy the client ID and client secret and paste it into the config.py file
 # example config.py file:
 class WEB:
     host = "localhost"
-    port = 3000
+    port = 4000
     base_url = f"http://{host}:{port}"
 
 
