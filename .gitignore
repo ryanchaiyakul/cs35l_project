@@ -7,17 +7,16 @@
 
 !package.json
 **.config.*
+**.log
+**.json
+**.config.js
 
-# secrets file
-config.py
-# json database file
-db/data.json
-# json database audio folder
-db/audio_files
- 
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+!package.json
 
-# dependencies
+.venv
+.vscode
+
+# NPM folders
 node_modules
 /.pnp
 .pnp.js
@@ -54,4 +53,5 @@ next-env.d.ts
 # log
 logs
 
+#env
 env
