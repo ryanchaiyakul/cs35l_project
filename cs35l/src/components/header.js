@@ -3,7 +3,7 @@ import { Link } from "react-scroll";
 const Header = () => {
     return (
         <nav>
-            <ul className="header" style={{ height: '7vh', marginTop:'0px', fontSize:'25px', color:"#ff6e40"}}>
+            <ul className="header" style={{ height: '7vh', marginTop:'0px', fontSize:'25px', color:"#1e3d59"}}>
                 <li>
                     <Link
                         activeClass="active"
