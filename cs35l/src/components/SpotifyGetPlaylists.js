@@ -76,10 +76,6 @@ export default function SpotifyGetPlaylists() {
         }
     }
 
-    function handleChangePlaylist() {
-        setChoosingNewPlaylist(true);
-    }
-
     const handleOptionChange = (event) => {        
         setCurrPlaylistID(event.target.value);
         setChoosingNewPlaylist(false);
@@ -93,13 +89,16 @@ export default function SpotifyGetPlaylists() {
             const EmptyPlaylistDataMessage  = "you have no playlists! get a playlists of recommendations at PAGE_TBD"
             return (
                 <>
-                    {fetchedPlaylists ? EmptyPlaylistDataMessage : FetchedPlaylistsMessage}
+                    <div>
+                        {fetchedPlaylists ? EmptyPlaylistDataMessage : FetchedPlaylistsMessage}
+                        <button onClick={() => setChoosingNewPlaylist(false)}>OK!</button>
+                    </div>
                 </>
             ); 
         } else {
             return (
                 <div>
-                    <select value={currPlaylistID} onChange={handleOptionChange}>
+                    <select value={currPlaylistID} onChange={handleOptionChange} id='playlistsDropdown'>
                         {playlistData.map((playlist) => (
                         <option value={playlist['id']} key={playlist['name']}>
                             {playlist['name']}
@@ -120,10 +119,13 @@ export default function SpotifyGetPlaylists() {
         }
     }, []);
     
+    if (userID === '') {
+        console.log('no userID')
+    }
+
     return (
-        
         <div>
-            <button onClick={handleChangePlaylist}>Change Playlist</button>
+            <button onClick={() => setChoosingNewPlaylist(true)} id='changePlaylistButton'>Change Playlist</button>
             {choosingNewPlaylist ? <ScrollingPlaylistMenu/> : <SpotifyEmbed playlistID={currPlaylistID}/>}
         </div>
     );
