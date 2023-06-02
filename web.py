@@ -49,6 +49,9 @@ class CS35L(Quart):
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
 
+        self.static_folder = "./cs35l/build/static"
+        self.template_folder = "./cs35l/build"
+
         self.http = http.Utils()
         self.db = database.DB(self.loop)
         self.secret_key = secrets.token_urlsafe(64)
@@ -253,6 +256,16 @@ async def _get_audio_metadata():
     data = await app.db.fetch_audio_metadata()
     return [{"title": record["title"], "tag": record["tag"]} for record in data]
 
+@app.route("/_get_audio_data")
+async def _get_audio_data():
+    title = request.args.get("title")
+    if not title:
+        abort(400, "Must supply title query parameter!")
+
+    audio_data = await app.db.fetch_audio_data(title)
+    if not audio_data:
+        abort(404, "Song title not found in database!")
+    return audio_data
 
 @app.route("/_get_user_playlist_names")
 async def _get_user_playlist_names():

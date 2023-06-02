@@ -135,3 +135,18 @@ class DB:
                 """
         data = await self.cxn.fetch(query)
         return [{"title": record["title"], "tag": record["tag"]} for record in data]
+
+    async def fetch_audio_data(self, title):
+        if self.json:
+            if not os.path.exists(f"./db/audio_files/{title}.mp3"):
+                return
+            with open(f"./db/audio_files/{title}.mp3", "rb") as fp:
+                data = fp.read()
+                return data;
+                            
+        query = """
+                SELECT audio
+                FROM audio_files
+                WHERE title = $1;
+                """
+        return await self.cxn.fetchval(query, title)
