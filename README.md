@@ -1,4 +1,4 @@
-# SETUP GUIDE
+# BACKEND SETUP GUIDE
 
 ## Step 1: Create a virtualenv
 
@@ -71,7 +71,7 @@ class POSTGRES:
     password = "postgres password" # enter your postgres password here
     host = "localhost" # or your IP address
     port = 5432
-    name = "CS35L"
+    name = "cs35l"
     uri = f"postgres://{user}:{password}@{host}:{port}/{name}"
 
 
@@ -79,5 +79,46 @@ class SPOTIFY:
     client_id = "my client id" # get this from the spotify 
     client_secret = "my client secret" # get this from the spotify 
     redirect_uri = WEB.base_url + "/connect" 
-
 ```
+
+# FRONTEND SETUP GUIDE
+
+## Step 1: Install npm and node
+
+#### Linux
+```console
+myuser@computer:~$ sudo apt install nodejs
+myuser@computer:~$ sudo apt install npm
+```
+
+#### MacOS
+```console
+myuser@computer:~$ brew install node
+```
+
+## Move into the correct directory
+```console
+myuser@computer:~$ cd frontend
+```
+
+## Install dependencies
+```console
+myuser@computer:~$ npm install
+```
+
+## Install dependencies
+```console
+myuser@computer:~$ npm install
+```
+
+## Make frontend build
+```console
+myuser@computer:~$ npm run build
+```
+
+# RUN THE APP
+```console
+python web.py
+```
+
+

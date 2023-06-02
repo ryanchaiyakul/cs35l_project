@@ -6,7 +6,7 @@ import time
 import base64
 from urllib.parse import urlencode
 
-from utilities import cache
+from backend import cache
 from config import SPOTIFY
 
 

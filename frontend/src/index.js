@@ -9,7 +9,7 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-     <MyStats/>   Uncomment this for now (Working on homepage
+     <MyStats/>
      {/* <MyHomescreen/>  */}
   </React.StrictMode>
 );

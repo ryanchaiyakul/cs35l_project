@@ -36,23 +36,25 @@ class DB:
 
     async def scriptexec(self):
         if self.json:
-            if not os.path.exists("./db/data.json"):
-                with open("./db/data.json", "w") as fp:
+            if not os.path.exists("./jsondb"):
+                os.makedirs("./jsondb")
+            if not os.path.exists("./jsondb/data.json"):
+                with open("./jsondb/data.json", "w") as fp:
                     fp.write(r'{"users": {}, "audio": {}}')
-            if not os.path.exists("./db/audio_files"):
-                os.makedirs("./db/audio_files")
+            if not os.path.exists("./jsondb/audio_files"):
+                os.makedirs("./jsondb/audio_files")
 
         else:
-            # We execute the SQL scripts to make sure we have all our tables.
-            with open("./db/scripts.sql", "r", encoding="utf-8") as script:
+            # We execute the SQL script to make sure we have all our tables.
+            with open("./backend/tables.sql", "r", encoding="utf-8") as script:
                 await self.cxn.execute(script.read())
 
     async def insert_user(self, user_id, token_info):
         if self.json:
-            with open("./db/data.json", "r") as fp:
+            with open("./jsondb/data.json", "r") as fp:
                 db = json.load(fp)
                 db["users"][user_id] = token_info
-            with open("./db/data.json", "w") as fp:
+            with open("./jsondb/data.json", "w") as fp:
                 json.dump(db, fp, indent=2)
 
         else:
@@ -67,10 +69,10 @@ class DB:
 
     async def delete_user(self, user_id):
         if self.json:
-            with open("./db/data.json", "r") as fp:
+            with open("./jsondb/data.json", "r") as fp:
                 db = json.load(fp)
                 db["users"].pop(user_id, None)
-            with open("./db/data.json", "w") as fp:
+            with open("./jsondb/data.json", "w") as fp:
                 json.dump(db, fp, indent=2)
         else:
             query = """
@@ -81,7 +83,7 @@ class DB:
 
     async def fetch_user(self, user_id):
         if self.json:
-            with open("./db/data.json", "r") as fp:
+            with open("./jsondb/data.json", "r") as fp:
                 db = json.load(fp)
                 token_info = db["users"].get(user_id)
         else:
@@ -98,7 +100,7 @@ class DB:
 
     async def insert_audio(self, title, owner_id, audio, tag):
         if self.json:
-            with open("./db/data.json", "r") as fp:
+            with open("./jsondb/data.json", "r") as fp:
                 db = json.load(fp)
                 if db["audio"][title]:
                     raise asyncpg.UniqueViolationError("Duplicate Key")
@@ -107,10 +109,10 @@ class DB:
                     "tag": tag,
                     "insertion": int(time.time())
                 }
-            with open("./db/data.json", "w") as fp:
+            with open("./jsondb/data.json", "w") as fp:
                 json.dump(db, fp, indent=2)
             
-            with open(f"./db/audio_files/{title}.mp3", "wb") as fp:
+            with open(f"./jsondb/audio_files/{title}.mp3", "wb") as fp:
                 fp.write(audio)
         
         else:
@@ -123,7 +125,7 @@ class DB:
 
     async def fetch_audio_metadata(self):
         if self.json:
-            with open("./db/data.json", "r") as fp:
+            with open("./jsondb/data.json", "r") as fp:
                 db = json.load(fp)
                 data = db["audio"]
 
@@ -138,9 +140,9 @@ class DB:
 
     async def fetch_audio_data(self, title):
         if self.json:
-            if not os.path.exists(f"./db/audio_files/{title}.mp3"):
+            if not os.path.exists(f"./jsondb/audio_files/{title}.mp3"):
                 return
-            with open(f"./db/audio_files/{title}.mp3", "rb") as fp:
+            with open(f"./jsondb/audio_files/{title}.mp3", "rb") as fp:
                 data = fp.read()
                 return data;
                             

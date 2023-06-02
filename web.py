@@ -20,7 +20,7 @@ from quart import (
 
 
 import config
-from utilities import http, spotify, database
+from backend import http, spotify, database
 
 # Set up our website logger
 MAX_LOGGING_BYTES = 32 * 1024 * 1024  # 32 MiB
@@ -140,6 +140,11 @@ async def home():
 @app.route("/connect")
 async def spotify_connect():
     code = request.args.get("code")
+    user = await get_user()
+
+    if user: # We already have the user cached, no need to reconnect
+        redirect_location = session.pop("referrer", url_for("home"))
+        return await make_response(redirect(redirect_location))
 
     if not code:  # Need code, redirect user to spotify
         return redirect(spotify.Oauth(app).get_auth_url())
