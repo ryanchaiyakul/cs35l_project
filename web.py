@@ -266,7 +266,7 @@ async def _get_user_playlist_names():
 
 
 @app.route("/_get_embed_html")
-@login_required()
+# @login_required()
 async def get_embed_html():
     user_id = request.args.get("user_id")
     if not user_id:
