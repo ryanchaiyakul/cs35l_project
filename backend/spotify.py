@@ -185,7 +185,6 @@ class User:  # Current user's spotify instance
 
     @cache.cache(strategy=cache.Strategy.timed)
     async def get_recommendations(self, limit=100):
-        artists = await self.get_top_artists(10)
         recents = await self.get_recent_tracks(10)
 
         tracks = ",".join([t["track"]["id"] for t in recents["items"]][:5])
