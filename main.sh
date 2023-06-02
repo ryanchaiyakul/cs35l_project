@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ ! -f "config.py" ]; then
+    echo "Error: config.py does not exist"
+    exit 1
+fi
+
 # Run build if folder does not exist
 if [ ! -d "frontend/build" ]; then
     echo "Creating frontend build"
@@ -7,11 +12,6 @@ if [ ! -d "frontend/build" ]; then
     npm run build --prefix frontend > /dev/null
 else
     echo "Frontend build already exists"
-fi
-
-if [ ! -f "config.py" ]; then
-    echo "Error: config.py does not exist"
-    exit 1
 fi
 
 # Create python virtual environment if .venv does not exist
