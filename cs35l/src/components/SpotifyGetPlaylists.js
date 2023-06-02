@@ -7,7 +7,7 @@ function SpotifyEmbed({playlistID}) {
 
 create a spotify embed with the provided playlistID 
 
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/${playlistID}?utm_source=generator" 
+<iframe style="border-radius:12px" src={"https://open.spotify.com/embed/playlist/${playlistID}?utm_source=generator"}
 width="25%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; 
 picture-in-picture" loading="lazy"></iframe>
 
@@ -15,26 +15,9 @@ picture-in-picture" loading="lazy"></iframe>
 
 return (
     <div style={{borderRadius:'12px'}}>
-        <iframe src="https://open.spotify.com/embed/playlist/5hJ57gswRAZpEdE35qKVkt?utm_source=generator" width="25%" height="352" allowFullScreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <iframe src={`https://open.spotify.com/embed/playlist/${playlistID}?utm_source=generator`} width="25%" height="352" allowFullScreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </div>
     );
-
-}
-
-
-
-function ScrollingPlaylistMenu({playlists}) {
-    if (playlists = {}) {
-        // handle no playlists case (give a playlist of recommendations?)
-        return ( 
-            <> 
-                <p>no playlists found</p>
-            </>
-        );
-    } else {
-        return
-    }
-
 
 }
 
@@ -44,16 +27,15 @@ function ScrollingPlaylistMenu({playlists}) {
 // collects playlist id, and replaces SpotifyEmbed id with new embed
 
 export default function SpotifyGetPlaylists() {
-    const [playlistData, setPlaylistData] = useState({});
+    const [playlistData, setPlaylistData] = useState([]);
     const [fetchedPlaylists, setFetchedPlaylists] = useState(false);
     const [userID, setUserID] = useState('');
 
     const [choosingNewPlaylist, setChoosingNewPlaylist] = useState(false);
-    const [currPlaylistID, setCurrPlaylistID] = useState('5hJ57gswRAZpEdE35qKVkt');
+    const [currPlaylistID, setCurrPlaylistID] = useState('5diLKJriPFCawvoY9YRFKC');
 
     const getCookie = () => {
         const cookieArray = document.cookie.split(';');
-    
         for (let i = 0; i < cookieArray.length; i++) {
             const [key, value] = cookieArray[i].split('=');
         
@@ -61,20 +43,27 @@ export default function SpotifyGetPlaylists() {
                 return value;
             }
         }
-    
+        
         return '';
     };
 
-    const handleGetPlaylists = async () => {
+    async function getPlaylists(user_id) {
         // if user_id = '', redirect to sign in
         try {
-            console.log(userID);
-            // const response = await axios.get('http://localhost:4000/_get_user_playlist_names', {params: {user_id: userID}});
-            const response = await axios.get("http://localhost:4000/_get_embed_html");
+            const response = await axios.get('http://localhost:4000/_get_user_playlist_names', {params: {user_id: user_id}});
             setFetchedPlaylists(true);
             const playlists = response.data;
-            console.log(playlists)
-            setPlaylistData(playlists);
+
+            var parsedPlaylists = []
+            for (const playlist in playlists) {
+                var singleplaylist = {}
+                singleplaylist['id'] = playlist
+                singleplaylist['name'] = playlists[playlist]
+                parsedPlaylists.push(singleplaylist)
+            }
+
+            console.log(parsedPlaylists);
+            setPlaylistData(parsedPlaylists);
         } catch (error) {
             if (error.response) {
                 console.log(error.response.data);
@@ -87,21 +76,56 @@ export default function SpotifyGetPlaylists() {
         }
     }
 
+    function handleChangePlaylist() {
+        setChoosingNewPlaylist(true);
+    }
+
+    const handleOptionChange = (event) => {        
+        setCurrPlaylistID(event.target.value);
+        setChoosingNewPlaylist(false);
+    };
+
+    function ScrollingPlaylistMenu() {
+        console.log("scrollingmenu called")
+        if (playlistData === {} || !fetchedPlaylists) {
+            // handle no playlists case (give a playlist of recommendations?)
+            const FetchedPlaylistsMessage = "you must be logged in to spotify to see your playlists!"
+            const EmptyPlaylistDataMessage  = "you have no playlists! get a playlists of recommendations at PAGE_TBD"
+            return (
+                <>
+                    {fetchedPlaylists ? EmptyPlaylistDataMessage : FetchedPlaylistsMessage}
+                </>
+            ); 
+        } else {
+            return (
+                <div>
+                    <select value={currPlaylistID} onChange={handleOptionChange}>
+                        {playlistData.map((playlist) => (
+                        <option value={playlist['id']} key={playlist['name']}>
+                            {playlist['name']}
+                        </option>
+                        ))}
+                    </select>
+                    <p>Selected option: {currPlaylistID}</p>
+                </div>
+            )
+        }
+    }
+
     useEffect(() => {
         const user_id = getCookie();
         setUserID(user_id);
-        console.log(user_id)
+        if (user_id !== '') {
+            getPlaylists(user_id);
+        }
     }, []);
     
-    if (!choosingNewPlaylist) {
-        return (
-            <>
-                <button onClick={handleGetPlaylists}>Change Playlist</button>
-                <SpotifyEmbed playlistID={currPlaylistID}/>
-            </>
-        );
-    } else {
+    return (
         
-    }
+        <div>
+            <button onClick={handleChangePlaylist}>Change Playlist</button>
+            {choosingNewPlaylist ? <ScrollingPlaylistMenu/> : <SpotifyEmbed playlistID={currPlaylistID}/>}
+        </div>
+    );
     
 }
