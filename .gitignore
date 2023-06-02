@@ -1,9 +1,12 @@
 .venv
-env
 .vscode
 **.DS_Store
 **__pycache__
 **.json
+
+
+!package.json
+**.config.*
 
 # secrets file
 config.py
