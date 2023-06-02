@@ -51,12 +51,16 @@ class CS35L(Quart):
         self.static_folder = "./frontend/build/static"
         self.template_folder = "./frontend/build"
 
+
         self.http = http.Utils()
         self.db = database.DB(self.loop)
         self.secret_key = secrets.token_urlsafe(64)
         self.current_users = {}
 
     def run(self):
+        with open("./html/liked.html", "r") as fp:
+            with open("./frontend/build/liked.html", "w") as fp2:
+                fp2.write(fp.read())
         super().run(host=config.WEB.host, port=config.WEB.port, loop=self.loop)
 
 
@@ -182,21 +186,14 @@ async def spotify_disconnect():
     return response
 
 
-@app.route("/recent/")
-@login_required()
-async def recent():
-    user = await get_user()
-    tracks = await user.get_recent_tracks()
-
-    return str(tracks)
-
-
 @app.route("/liked/")
 @login_required()
 async def spotify_liked():
     user = await get_user()
     tracks = await user.get_liked_tracks()
-    return str(tracks)
+    tracks = [spotify.Track(t) for t in tracks]
+
+    return await render_template("liked.html", tracks=tracks)
 
 
 ###############
