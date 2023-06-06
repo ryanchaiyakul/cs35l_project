@@ -67,9 +67,9 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-const HamburgerMenu = () => {
+const HamburgerMenu = ({mainPlaylist, setPlaylist}) => {
   const [isPopupOpen, setPopupOpen] = useState(false);
-  const [mainPlaylist, setPlaylist] = useState([]);
+  
 
   function handlePlaylist(song) {
     if (!mainPlaylist.includes(song)) {

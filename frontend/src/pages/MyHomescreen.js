@@ -4,6 +4,7 @@ import FileUpload from '../components/fileUpload.js';
 import HamburgerMenu from '../components/hamburgerMenu';
 import MyStats from './MyStats';
 import { Link } from 'react-router-dom';
+import AudioPlayback from '../components/AudioPlayback.js';
 
 const Container = styled.div`
   background-color: #A7D2BD;
@@ -106,6 +107,7 @@ const CloseButton = styled.button`
 
 function HomeScreen() {
     const [isOpen, setIsOpen] = useState(false);
+    const [mainPlaylist, setPlaylist] = useState([]);
 
     const handleClick = () => {
         setIsOpen(!isOpen);
@@ -113,12 +115,13 @@ function HomeScreen() {
 
   return (
     <Container>
-      <HamburgerMenu />
+      <HamburgerMenu mainPlaylist={mainPlaylist} setPlaylist={setPlaylist}/>
       <Title>My Terrarium</Title>
       <ImageContainer>
         <Image src="https://i.pinimg.com/originals/96/4c/82/964c82250ef9951e3309b8e36d2bf9b9.gif" alt="Terrarium" />
       </ImageContainer>
       <Message>Image by <Hyperlink href="https://mini-moss.tumblr.com/about">Mini Moss</Hyperlink></Message>
+      <AudioPlayback playlist={mainPlaylist}/>
       <BottomRightContainer>
         <StyledLink to="/mystats">MyStats</StyledLink>
         <HamburgerMenuButton isOpen={isOpen} onClick={handleClick}>
