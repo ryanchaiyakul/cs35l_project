@@ -36,17 +36,16 @@ function FileUpload() {
     event.preventDefault();
 
     const formData = new FormData();
-    formData.append('audio', selectedFile);
+    formData.append('audio_file', selectedFile);
     formData.append('title', title);
     formData.append('tag', tag);
     formData.append('owner_id', userId);
 
     try {
-      const response = await fetch(' http://localhost:4000/_upload_audio', {
+      const response = await fetch('http://localhost:4000/_upload_audio', {
         method: 'POST',
         body: formData,
       });
-
       if (response.ok) {
         console.log('File upload successful');
         // Handle the response from the server
@@ -67,6 +66,9 @@ function FileUpload() {
   }, []);
 
   console.log(userId);
+  console.log(selectedFile);
+  console.log(title);
+  console.log(tag);
 
   return (
     <div>
