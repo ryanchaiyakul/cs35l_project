@@ -4,13 +4,11 @@ import axios from "axios";
 
 function SpotifyEmbed({playlistID}) { 
 /*
-
 create a spotify embed with the provided playlistID 
 
 <iframe style="border-radius:12px" src={"https://open.spotify.com/embed/playlist/${playlistID}?utm_source=generator"}
 width="25%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; 
 picture-in-picture" loading="lazy"></iframe>
-
 */
 
 return (
@@ -96,6 +94,15 @@ export default function SpotifyGetPlaylists() {
                 </>
             ); 
         } else {
+            var currentPlaylist =  ''
+            playlistData.forEach((playlist) => {
+                if (playlist['id'] == currPlaylistID)
+                {
+                    currentPlaylist = playlist['name']
+                }
+            });
+
+            console.log(currentPlaylist)
             return (
                 <div>
                     <select value={currPlaylistID} onChange={handleOptionChange} id='playlistsDropdown'>
@@ -105,7 +112,7 @@ export default function SpotifyGetPlaylists() {
                         </option>
                         ))}
                     </select>
-                    <p>Selected option: {currPlaylistID}</p>
+                    <p>currently playing from: {currentPlaylist}</p>
                 </div>
             )
         }
@@ -126,7 +133,8 @@ export default function SpotifyGetPlaylists() {
     return (
         <div>
             <button onClick={() => setChoosingNewPlaylist(true)} id='changePlaylistButton'>Change Playlist</button>
-            {choosingNewPlaylist ? <ScrollingPlaylistMenu/> : <SpotifyEmbed playlistID={currPlaylistID}/>}
+            {choosingNewPlaylist ? <ScrollingPlaylistMenu/> : null} 
+            <SpotifyEmbed playlistID={currPlaylistID}/>
         </div>
     );
     
