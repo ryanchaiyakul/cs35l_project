@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import styled from 'styled-components';
 import FileUpload from '../components/fileUpload.js';
 import HamburgerMenu from '../components/hamburgerMenu';
-import UploadHamburger from '../components/uploadHamburger.js';
 import MyStats from './MyStats';
 import { Link } from 'react-router-dom';
 
