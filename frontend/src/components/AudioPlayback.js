@@ -21,7 +21,6 @@ function AudioPlayback({playlist}) {
         <div>
             {playlist.map(song => (
             <PlaylistItem key={song.title}>
-                <p> test test</p>
                 <SongTitle>{song.title}</SongTitle>
                 Audio(`http://localhost:4000/_get_audio_data?title=${song.title}`)
             </PlaylistItem>

@@ -109,6 +109,17 @@ function HomeScreen() {
     const [isOpen, setIsOpen] = useState(false);
     const [mainPlaylist, setPlaylist] = useState([]);
 
+    function handlePlaylist(song) {
+      if (!mainPlaylist.includes(song)) {
+        setPlaylist([...mainPlaylist, song]);
+      }
+    }
+  
+    function removeSong(removedSong) {
+      const newPlaylist = mainPlaylist.filter(song => song !== removedSong);
+      setPlaylist(newPlaylist);
+    }
+
     const handleClick = () => {
         setIsOpen(!isOpen);
       };
@@ -121,7 +132,7 @@ function HomeScreen() {
         <Image src="https://i.pinimg.com/originals/96/4c/82/964c82250ef9951e3309b8e36d2bf9b9.gif" alt="Terrarium" />
       </ImageContainer>
       <Message>Image by <Hyperlink href="https://mini-moss.tumblr.com/about">Mini Moss</Hyperlink></Message>
-      <AudioPlayback playlist={mainPlaylist}/>
+      <AudioPlayback playlist={mainPlaylist} handlePlaylist={handlePlaylist} removeSong={removeSong}/>
       <BottomRightContainer>
         <StyledLink to="/mystats">MyStats</StyledLink>
         <HamburgerMenuButton isOpen={isOpen} onClick={handleClick}>
