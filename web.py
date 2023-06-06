@@ -18,7 +18,6 @@ from quart import (
     make_response,
 )
 
-
 import config
 from backend import http, spotify, database
 
@@ -52,13 +51,18 @@ class CS35L(Quart):
         self.static_folder = "./frontend/build/static"
         self.template_folder = "./frontend/build"
 
+
         self.http = http.Utils()
         self.db = database.DB(self.loop)
         self.secret_key = secrets.token_urlsafe(64)
         self.current_users = {}
 
     def run(self):
+        with open("./html/liked.html", "r") as fp:
+            with open("./frontend/build/liked.html", "w") as fp2:
+                fp2.write(fp.read())
         super().run(host=config.WEB.host, port=config.WEB.port, loop=self.loop)
+
 
 app = CS35L(__name__)
 
@@ -142,7 +146,7 @@ async def spotify_connect():
     code = request.args.get("code")
     user = await get_user()
 
-    if user: # We already have the user cached, no need to reconnect
+    if user:  # We already have the user cached, no need to reconnect
         redirect_location = session.pop("referrer", url_for("home"))
         return await make_response(redirect(redirect_location))
 
@@ -182,21 +186,14 @@ async def spotify_disconnect():
     return response
 
 
-@app.route("/recent/")
-@login_required()
-async def recent():
-    user = await get_user()
-    tracks = await user.get_recent_tracks()
-
-    return str(tracks)
-
-
 @app.route("/liked/")
 @login_required()
 async def spotify_liked():
     user = await get_user()
     tracks = await user.get_liked_tracks()
-    return str(tracks)
+    tracks = [spotify.Track(t) for t in tracks]
+
+    return await render_template("liked.html", tracks=tracks)
 
 
 ###############
@@ -218,9 +215,22 @@ async def _get_user_stats():
     return {"recent": rtracks["items"], "top_tracks": ttracks, "top_artists": artists}
 
 
+@app.route("/_get_user_recommendations")
+async def _get_recommendations():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
+    data = await user.get_recommendations(limit=10)
+    return data["tracks"]
+
+
 @app.route("/_upload/")
 async def upload():
     return await render_template("upload.html")
+
 
 @app.route("/_is_user_valid")
 async def _is_user_valid():
@@ -230,6 +240,7 @@ async def _is_user_valid():
     user = await get_user_from_id(user_id)
     if not user:
         abort(404, "Invalid user, user must log in to spotify first.")
+
 
 @app.route("/_upload_audio", methods=["POST", "GET"])
 async def _upload_audio():
@@ -261,6 +272,7 @@ async def _get_audio_metadata():
     data = await app.db.fetch_audio_metadata()
     return [{"title": record["title"], "tag": record["tag"]} for record in data]
 
+
 @app.route("/_get_audio_data")
 async def _get_audio_data():
     title = request.args.get("title")
@@ -271,6 +283,7 @@ async def _get_audio_data():
     if not audio_data:
         abort(404, "Song title not found in database!")
     return audio_data
+
 
 @app.route("/_get_user_playlist_names")
 async def _get_user_playlist_names():

@@ -2,6 +2,7 @@
 ## AUTHENTICATION AND SPOTIFY REQUESTS ##
 #########################################
 
+import json
 import time
 import base64
 from urllib.parse import urlencode
@@ -9,8 +10,10 @@ from urllib.parse import urlencode
 from backend import cache
 from config import SPOTIFY
 
+from datetime import date
 
 class CONSTANTS:
+    GREEN_ICON = "https://cdn.discordapp.com/attachments/872338764276576266/932399347289706556/spotify_green.png" # Spotify icon
     BASE_URL = "https://open.spotify.com/"
     API_URL = "https://api.spotify.com/v1/"
     AUTH_URL = "https://accounts.spotify.com/authorize"
@@ -184,9 +187,16 @@ class User:  # Current user's spotify instance
         return await self.get(CONSTANTS.API_URL + "me")
 
     @cache.cache(strategy=cache.Strategy.timed)
-    async def get_recommendations(self, limit=100, **kwargs):
-        params = {"limit": limit}
-        params.update(**kwargs)
+    async def get_recommendations(self, limit=100):
+        recents = await self.get_recent_tracks(10)
+
+        tracks = ",".join([t["track"]["id"] for t in recents["items"]][:5])
+        print(tracks)
+
+        params = {
+            "limit": limit,
+            "seed_tracks": tracks,
+        }
         return await self.get(
             CONSTANTS.API_URL + "recommendations?" + urlencode(params)
         )
@@ -296,3 +306,77 @@ class User:  # Current user's spotify instance
     async def get_embed(self, url):
         query = urlencode({"url": url})
         return await self.get(CONSTANTS.BASE_URL + "oembed?" + query)
+
+
+class BaseUtils:
+    def __init__(self) -> None:
+        pass
+
+    def _get_image(self, obj, quality="best"):
+        if quality == "fast":
+            index = -1
+        else:
+            index = 0
+        try:
+            return obj["images"][index]["url"]
+        except (IndexError, KeyError):
+            return CONSTANTS.GREEN_ICON
+
+    def _release_date(self, date_str):
+        date_parts = date_str.split("-")
+        date_parts = [int(dp) for dp in date_parts]
+        
+        if len(date_parts) == 1 or len(date_parts) == 2:
+            return date_parts[0]
+        
+        date_obj = date(*date_parts)
+
+        return date_obj.__format__("%B %d, %Y")
+    
+    def parse_duration(self, duration: int):
+        """
+        Helper function to get visually pleasing
+        timestamps from position of song in seconds.
+        """
+        duration = round(duration)
+        if duration > 0:
+            minutes, seconds = divmod(duration, 60)
+            hours, minutes = divmod(minutes, 60)
+            days, hours = divmod(hours, 24)
+
+            duration = []
+            if days > 0:
+                duration.append(str(days))
+            if hours > 0:
+                duration.append(str(hours))
+            if minutes > 0:
+                duration.append(str(minutes))
+            duration.append("{}".format(str(seconds).zfill(2)))
+
+            value = ":".join(duration)
+
+        elif duration == 0:
+            value = "LIVE"
+
+        return value
+
+class Track(BaseUtils):
+    def __init__(self, data, *, quality="best"):
+        super().__init__()
+        self.id = data["id"]
+        self.name = data["name"]
+        self.cover = self._get_image(data["album"], quality=quality)
+        self.release = self._release_date(data["album"]["release_date"])
+        self.uri = "spotify:track:" + self.id
+        self.url = data["external_urls"]["spotify"]
+        self.popularity = data.get("popularity")
+        self.duration = self.parse_duration(data["duration_ms"] / 1000)
+        self.raw_duration = data["duration_ms"]
+        self.preview = data["preview_url"]
+
+        self.artists = data["artists"]
+
+        self.raw = data
+        self.json = json.dumps(data)
+        self.index = data.get("index")
+

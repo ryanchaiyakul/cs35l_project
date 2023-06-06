@@ -107,14 +107,14 @@ class DB:
                 db["audio"][title] = {
                     "owner_id": owner_id,
                     "tag": tag,
-                    "insertion": int(time.time())
+                    "insertion": int(time.time()),
                 }
             with open("./jsondb/data.json", "w") as fp:
                 json.dump(db, fp, indent=2)
-            
+
             with open(f"./jsondb/audio_files/{title}.mp3", "wb") as fp:
                 fp.write(audio)
-        
+
         else:
             query = """
                     INSERT INTO audio_files
@@ -130,7 +130,7 @@ class DB:
                 data = db["audio"]
 
             return [{"title": k, "tag": v["tag"]} for k, v in data.items()]
-                
+
         query = """
                 SELECT title, tag
                 FROM audio_files;
@@ -144,8 +144,8 @@ class DB:
                 return
             with open(f"./jsondb/audio_files/{title}.mp3", "rb") as fp:
                 data = fp.read()
-                return data;
-                            
+                return data
+
         query = """
                 SELECT audio
                 FROM audio_files

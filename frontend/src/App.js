@@ -1,24 +1,23 @@
 import logo from './logo.svg';
-import './App.css';
+import './css/App.css';
+import SearchBar from './components/searchBar.js'
+import FileUpload from './components/fileUpload.js'
+import HamburgerMenu from './components/hamburgerMenu'
+import HomeScreen from './pages/MyHomescreen.js'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import MyStats from './pages/MyStats.js';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomeScreen />} />
+        <Route path="/mystats" element={<MyStats/>} />
+      </Routes>
+    </Router>
     </div>
   );
 }
 
+export default App;
