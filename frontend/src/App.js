@@ -1,12 +1,23 @@
 import logo from './logo.svg';
-import './App.css';
+import './css/App.css';
 import SearchBar from './components/searchBar.js'
 import FileUpload from './components/fileUpload.js'
-import { BrowserRouter as Router} from 'react-router-dom';
+import HamburgerMenu from './components/hamburgerMenu'
+import HomeScreen from './pages/MyHomescreen.js'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import MyStats from './pages/MyStats.js';
 
 function App() {
   return (
-    <HamburgerMenu/>
+    <div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomeScreen />} />
+        <Route path="/mystats" element={<MyStats/>} />
+      </Routes>
+    </Router>
+    </div>
   );
 }
 
+export default App;

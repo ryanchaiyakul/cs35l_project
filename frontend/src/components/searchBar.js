@@ -1,36 +1,119 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import styled from 'styled-components';
 
-// const songs = [
-//   {
-//     title: 'OMG',
-//     author: 'New Jeans',
-//     tag: 'Kpop',
-//   },
-//   {
-//     title: 'Up!',
-//     author: 'Kep1er',
-//     tag: 'Kpop',
-//   },
-// {
-//   title: 'So Good',
-//   author: 'Weston Estate',
-//   tag: 'Indie',
-// },
-// {
-//   title: 'Calone',
-//   author: 'Tiffany Day',
-//   tag: 'Indie',
-// },
-// {
-//   title: 'Racing through the Night',
-//   author: 'Yoasobi',
-//   tag: 'Jpop',
-// },
-// ]
+const Container = styled.div`
+  background-color: #191414;
+  color: #fff;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+`;
 
+const Title = styled.h1`
+  font-size: 24px;
+  margin-bottom: 20px;
+`;
 
-export default function SearchBar() {
+const SearchInput = styled.input`
+  padding: 10px;
+  width: 80%;
+  border-radius: 4px;
+  border: none;
+  background-color: #282828;
+  color: #fff;
+  margin-bottom: 10px;
+`;
+
+const TagsContainer = styled.div`
+  margin-bottom: 10px;
+`;
+
+const TagButton = styled.button`
+  background-color: ${({ active }) => (active ? '#167344' : '#69B38E')};
+  color: #fff;
+  padding: 5px 10px;
+  margin: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+
+  &:hover {
+    background-color: grey;
+  }
+`;
+
+const ClearButton = styled.button`
+  background-color: grey;
+  color: #fff;
+  padding: 5px 10px;
+  margin: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+
+  &:hover {
+    background-color: #B3B6B4;
+  }
+`;
+
+const SongContainer = styled.div`
+  background-color: #282828;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const SongTitle = styled.p`
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 5px;
+`;
+
+const AddToPlaylistButton = styled.button`
+  background-color: #1db1ff;
+  color: #fff;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+
+`;
+
+const PlaylistContainer = styled.div`
+  margin-top: 20px;
+`;
+
+const PlaylistTitle = styled.h2`
+  font-size: 20px;
+  margin-bottom: 10px;
+`;
+
+const PlaylistItem = styled.div`
+  background-color: #282828;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const RemoveFromPlaylistButton = styled.button`
+  background-color: #1db1ff;
+  color: #fff;
+  padding: 5px 10px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+`;
+
+export default function SearchBar({ playlist, handlePlaylist, removeSong }) {
   const [songs, setSongs] = useState([]);
 
   // fetch list of audios and their metadata
@@ -49,26 +132,22 @@ export default function SearchBar() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
-  const [playlist, setPlaylist] = useState([]);
 
-  // event handler
+  // event handlers
   function handleSearchQueryChange(event) {
     setSearchQuery(event.target.value);
   }
 
-  function handleTagClick(tag){
-    setSelectedTags([...selectedTags, tag]);
-  }
-
-  function handlePlaylist(song) {
-    if(!playlist.includes(song)){
-      setPlaylist([...playlist, song]);
+  function handleTagClick(tag) {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter(selectedTag => selectedTag !== tag));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
     }
   }
 
-  function removeSong(removedSong) {
-    const newPlaylist = playlist.filter(song => song !== removedSong);
-    setPlaylist(newPlaylist);
+  function handleClearTags() {
+    setSelectedTags([]);
   }
 
   const filteredSongs = songs.filter(song => {
@@ -76,36 +155,77 @@ export default function SearchBar() {
       return song.title.toLowerCase().includes(searchQuery.toLowerCase());
     }
     return false;
-  });  
+  });
 
-  // get a list of unique tags for rendering the tag buttons
-  const uniqueTags = [...new Set(songs.map(song => song.tag))];
+  // hardcoded tags
+  const uniqueTags = ['animals', 'people', 'white noise', 'weather'];
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  function toggleMenu() {
+    setIsMenuOpen(!isMenuOpen);
+  }
+
+  function handleSearchBarClick() {
+    if (!isMenuOpen) {
+      setTimeout(() => {
+        toggleMenu();
+      }, 0);
+    }
+  }
+  
+  useEffect(() => {
+    function handleOutsideClick(event) {
+      const menuContainer = document.getElementById('menu-container');
+      if (isMenuOpen && !menuContainer.contains(event.target)) {
+        toggleMenu();
+      }
+    }
+  
+    window.addEventListener('mousedown', handleOutsideClick);
+  
+    return () => {
+      window.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [isMenuOpen]);  
 
   return (
-    <div>
-      <h1>Search</h1>
-      <input type="text" value={searchQuery} onChange={handleSearchQueryChange} />
-      <p> Tags: </p>
-      {uniqueTags.map(tag => (
-        <button key={tag} onClick={() => handleTagClick(tag)}>{tag}</button>
-      ))}
-      <button onClick={() => setSelectedTags([])}>Clear Tags</button>
+    <Container>
+      <Title>Search</Title>
+      <SearchInput type="text" value={searchQuery} onChange={handleSearchQueryChange} onClick={handleSearchBarClick} />
+      {isMenuOpen && (
+        <div id="menu-container">
+          <TagsContainer>
+            <p>Tags:</p>
+            {uniqueTags.map(tag => (
+              <TagButton 
+                key={tag} 
+                onClick={() => handleTagClick(tag)}
+                active={selectedTags.includes(tag)}
+              >
+                {tag}
+              </TagButton>
+            ))}
+            <ClearButton onClick={handleClearTags}>clear all</ClearButton>
+          </TagsContainer>
+          {filteredSongs.map(song => (
+            <SongContainer key={song.title}>
+              <SongTitle>{song.title}</SongTitle>
+              <AddToPlaylistButton onClick={() => handlePlaylist(song)}>+</AddToPlaylistButton>
+            </SongContainer>
+          ))}
+        </div>
+      )}
 
-      {filteredSongs.map(song => (
-        <div key={song.title}>
-          <p>{song.title}</p>
-          <button onClick={() => handlePlaylist(song)}> + </button>
-          </div>
-      ))}
-      <h2>Playlist</h2>
-      <ul>
+      <PlaylistContainer>
+        <PlaylistTitle>Playlist</PlaylistTitle>
         {playlist.map(song => (
-          <div key={song.title}>
-          <li>{song.title}</li>
-          <button onClick={() =>removeSong(song)}> x </button>
-          </div>
+          <PlaylistItem key={song.title}>
+            <SongTitle>{song.title}</SongTitle>
+            <RemoveFromPlaylistButton onClick={() => removeSong(song)}>x</RemoveFromPlaylistButton>
+          </PlaylistItem>
         ))}
-      </ul>
-    </div>
+      </PlaylistContainer>
+    </Container>
   );
 }

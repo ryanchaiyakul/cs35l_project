@@ -66,6 +66,7 @@ class CS35L(Quart):
 
 app = CS35L(__name__)
 
+
 async def get_user():
     user_id = request.cookies.get("user_id")
     if user_id:
@@ -125,13 +126,6 @@ async def speed_loader():
     user = await get_user()
     if user:
         app.loop.create_task(_tasked_requests(user))
-
-@app.after_request
-def after_request(response):
-  response.headers.add('Access-Control-Allow-Origin', '*')
-  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-  return response
 
 
 @app.after_request

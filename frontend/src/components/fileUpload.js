@@ -1,10 +1,60 @@
 import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #191414;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  margin-bottom: 10px;
+`;
+
+const StyledInput = styled.input`
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 50%;
+  color: black;
+`;
+
+const UploadFileButton = styled.input`
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+`;
+
+
+const StyledSelect = styled.select`
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 50%;
+`;
+
+const StyledButton = styled.button`
+  padding: 10px 20px;
+  background-color: #69B38E;
+  color: white;
+  border: none;
+  cursor: pointer;
+`;
 
 function FileUpload() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [title, setTitle] = useState('');
   const [tag, setTag] = useState('');
   const [userId, setUserId] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -35,6 +85,13 @@ function FileUpload() {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
+    if (!selectedFile || !title || !tag) {
+      setErrorMessage('Please fill in all fields');
+      return;
+    }
+
+    setErrorMessage('');
+
     const formData = new FormData();
     formData.append('audio', selectedFile);
     formData.append('title', title);
@@ -42,21 +99,18 @@ function FileUpload() {
     formData.append('owner_id', userId);
 
     try {
-      const response = await fetch(' http://localhost:4000/_upload_audio', {
+      const response = await fetch('http://localhost:4000/_upload_audio', {
         method: 'POST',
         body: formData,
       });
 
       if (response.ok) {
         console.log('File upload successful');
-        // Handle the response from the server
       } else {
         console.log('File upload failed');
-        // Handle the response from the server in case of failure
       }
     } catch (error) {
       console.log('An error occurred during file upload:', error);
-      // Handle any errors that occurred during the request
     }
   };
 
@@ -69,15 +123,22 @@ function FileUpload() {
   console.log(userId);
 
   return (
-    <div>
-      <form method="post" encType="multipart/form-data" onSubmit={handleFormSubmit}>
-        <input placeholder="file" type="file" name="audio_file" accept="Audio/mp3" onChange={handleFileChange} />
-        <input placeholder="owner id" type="text" name="owner_id"/>
-        <input placeholder="title" type="text" name="title" value={title} onChange={handleTitleChange} />
-        <input placeholder="tag" type="text" name="tag" value={tag} onChange={handleTagChange} />
-        <button type="submit">Upload</button>
-      </form>
-    </div>
+    <Container>
+      <Form method="post" encType="multipart/form-data" onSubmit={handleFormSubmit}>
+        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+        <UploadFileButton placeholder="file" type="file" name="audio_file" accept="Audio/mp3" onChange={handleFileChange} />
+        <input type="hidden" value={userId} name="owner_id"/>
+        <StyledInput placeholder="Title" type="text" name="title" value={title} onChange={handleTitleChange} />
+        <StyledSelect name="tag" value={tag} onChange={handleTagChange}>
+          <option value="">Select a tag</option>
+          <option value="animals">Animals</option>
+          <option value="people talking">People Talking</option>
+          <option value="white noise">White Noise</option>
+          <option value="weather">Weather</option>
+        </StyledSelect>
+        <StyledButton type="submit">Upload</StyledButton>
+      </Form>
+    </Container>
   );
 }
 
