@@ -14,9 +14,28 @@ const Title = styled.h1`
   margin-bottom: 20px;
 `;
 
+const HamburgerMenu = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+const HamburgerIcon = styled.div`
+  width: 20px;
+  height: 2px;
+  background-color: #fff;
+  margin-right: 5px;
+`;
+
+const HamburgerText = styled.p`
+  color: #fff;
+  font-size: 16px;
+  margin: 0;
+  cursor: pointer;
+`;
+
 const SearchInput = styled.input`
   padding: 10px;
-  width: 80%;
   border-radius: 4px;
   border: none;
   background-color: #282828;
@@ -29,32 +48,32 @@ const TagsContainer = styled.div`
 `;
 
 const TagButton = styled.button`
-  background-color: ${({ active }) => (active ? '#167344' : '#69B38E')};
+  background-color: #1db1ff;
   color: #fff;
   padding: 5px 10px;
-  margin: 10px;
+  margin-right: 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
 
   &:hover {
-    background-color: grey;
+    background-color: #1ed760;
   }
 `;
 
-const ClearButton = styled.button`
-  background-color: grey;
+const ClearTagsButton = styled.button`
+  background-color: #1db1ff;
   color: #fff;
   padding: 5px 10px;
-  margin: 10px;
+  margin-right: 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
 
   &:hover {
-    background-color: #B3B6B4;
+    background-color: #1ed760;
   }
 `;
 
@@ -82,6 +101,9 @@ const AddToPlaylistButton = styled.button`
   cursor: pointer;
   font-size: 14px;
 
+  &:hover {
+    background-color: #0099e6;
+  }
 `;
 
 const PlaylistContainer = styled.div`
@@ -103,7 +125,7 @@ const PlaylistItem = styled.div`
 `;
 
 const RemoveFromPlaylistButton = styled.button`
-  background-color: #1db1ff;
+  background-color: #1db954;
   color: #fff;
   padding: 5px 10px;
   margin-left: 10px;
@@ -111,6 +133,10 @@ const RemoveFromPlaylistButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+
+  &:hover {
+    background-color: #1ed760;
+  }
 `;
 
 export default function SearchBar({ playlist, handlePlaylist, removeSong }) {
@@ -139,11 +165,7 @@ export default function SearchBar({ playlist, handlePlaylist, removeSong }) {
   }
 
   function handleTagClick(tag) {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter(selectedTag => selectedTag !== tag));
-    } else {
-      setSelectedTags([...selectedTags, tag]);
-    }
+    setSelectedTags([...selectedTags, tag]);
   }
 
   function handleClearTags() {
@@ -157,9 +179,8 @@ export default function SearchBar({ playlist, handlePlaylist, removeSong }) {
     return false;
   });
 
-  // hardcoded tags
-  const uniqueTags = ['animals', 'people', 'white noise', 'weather'];
-
+  // get a list of unique tags for rendering the tag buttons
+  const uniqueTags = [...new Set(songs.map(song => song.tag))];
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   function toggleMenu() {
@@ -198,15 +219,11 @@ export default function SearchBar({ playlist, handlePlaylist, removeSong }) {
           <TagsContainer>
             <p>Tags:</p>
             {uniqueTags.map(tag => (
-              <TagButton 
-                key={tag} 
-                onClick={() => handleTagClick(tag)}
-                active={selectedTags.includes(tag)}
-              >
+              <TagButton key={tag} onClick={() => handleTagClick(tag)}>
                 {tag}
               </TagButton>
             ))}
-            <ClearButton onClick={handleClearTags}>clear all</ClearButton>
+            <ClearTagsButton onClick={handleClearTags}>Clear Tags</ClearTagsButton>
           </TagsContainer>
           {filteredSongs.map(song => (
             <SongContainer key={song.title}>

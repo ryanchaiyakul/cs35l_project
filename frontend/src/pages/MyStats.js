@@ -1,8 +1,8 @@
-import './MyStats.css';
+import '../css/MyStats.css';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 //Easy scrollable
-import Header from "./header";
+import Header from "../components/header";
 
 
 //pass user_id as a query param into the get request 
