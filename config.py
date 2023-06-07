@@ -5,8 +5,8 @@ class WEB:
 
 
 class POSTGRES:
-    user = "angelatan"
-    password = "dongdonG09" # enter your postgres password here
+    user = "helenfeng"
+    password = "hyfg2820" # enter your postgres password here
     host = "localhost" # or your IP address
     port = 5432
     name = "cs35l"
@@ -14,6 +14,6 @@ class POSTGRES:
 
 
 class SPOTIFY:
-    client_id = "315e1a27ebcb4a5988683331762b6a52" # get this from the spotify 
-    client_secret = "96d1d934e0644431af15c0678603a0f8" # get this from the spotify 
+    client_id = "0ef075763c7c4e4bb9c4741dd65614cb" # get this from the spotify 
+    client_secret = "53bff45a9fae46a7a235656b94b73ba1" # get this from the spotify 
     redirect_uri = WEB.base_url + "/connect"
