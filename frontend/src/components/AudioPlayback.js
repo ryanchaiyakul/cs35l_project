@@ -16,6 +16,20 @@ const SongTitle = styled.p`
   margin-bottom: 5px;
 `;
 
+/**
+ * Returns HTML Audio Elements for every song in the passed in playlist prop
+ * 
+ * The prop should be directly from the backend in dictionary format
+ * 
+ * TODO: 
+ * 
+ * Integrate play and volume control with HTMLMediaElement API
+ * https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement
+ * 
+ * Style the output
+ * 
+ * Get it to run (debug backend)
+ */
 function AudioPlayback({playlist}) {
     return (
         <div>
