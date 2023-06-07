@@ -98,6 +98,12 @@ export default function SpotifyGetPlaylists() {
             // handle no playlists case (give a playlist of recommendations?)
             const FetchedPlaylistsMessage = "you must be logged in to spotify to see your playlists!"
             const EmptyPlaylistDataMessage  = "you have no playlists! get a playlists of recommendations at PAGE_TBD"
+
+            if (!fetchedPlaylists)
+            {
+                getPlaylists('');
+            }
+
             return (
                 <>
                     <div>
