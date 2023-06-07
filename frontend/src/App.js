@@ -19,8 +19,8 @@ function App() {
 
   return (
     <div>
-      {/* <MyStats/> */}
       <MyRecommendations/>
+      {/* <MyRecommendations/> */}
 
       {/* <Routes>
         <Route path="MyStats" element={<Navigate to="/MyStats"/>} />
