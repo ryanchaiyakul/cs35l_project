@@ -1,13 +1,10 @@
 **.DS_Store
 **__pycache__
 **.json
-
+utilities
 
 !package.json
 **.config.*
-**.log
-**.json
-**.config.js
 
 !package.json
 
@@ -51,3 +48,4 @@ logs
 
 #env
 env
+config.py

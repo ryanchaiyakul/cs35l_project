@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import FileUpload from '../components/fileUpload.js';
 import HamburgerMenu from '../components/hamburgerMenu';
 import MyStats from './MyStats';
+import SpotifyGetPlaylists from '../components/SpotifyGetPlaylists.js';
 import { Link } from 'react-router-dom';
 import AudioPlayback from '../components/AudioPlayback.js';
 
@@ -104,6 +105,14 @@ const CloseButton = styled.button`
   color:white;
 `;
 
+const SpotifyEmbedContainer = styled.div`
+  position: absolute;
+  border: none;
+  max-width: 300px;
+  top: 15%;
+  right: 5%;
+`;
+
 
 function HomeScreen() {
     const [isOpen, setIsOpen] = useState(false);
@@ -133,6 +142,9 @@ function HomeScreen() {
       </ImageContainer>
       <Message>Image by <Hyperlink href="https://mini-moss.tumblr.com/about">Mini Moss</Hyperlink></Message>
       <AudioPlayback playlist={mainPlaylist} handlePlaylist={handlePlaylist} removeSong={removeSong}/>
+      <SpotifyEmbedContainer>
+        <SpotifyGetPlaylists/>
+      </SpotifyEmbedContainer>
       <BottomRightContainer>
         <StyledLink to="/mystats">MyStats</StyledLink>
         <HamburgerMenuButton isOpen={isOpen} onClick={handleClick}>
