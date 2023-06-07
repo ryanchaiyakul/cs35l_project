@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import FileUpload from '../components/fileUpload.js';
 import HamburgerMenu from '../components/hamburgerMenu';
 import MyStats from './MyStats';
+import SpotifyGetPlaylists from '../components/SpotifyGetPlaylists.js';
 import { Link } from 'react-router-dom';
 
 const Container = styled.div`
@@ -103,6 +104,14 @@ const CloseButton = styled.button`
   color:white;
 `;
 
+const SpotifyEmbedContainer = styled.div`
+  position: absolute;
+  border: none;
+  max-width: 300px;
+  top: 20%;
+  right: 5%;
+`;
+
 
 function HomeScreen() {
     const [isOpen, setIsOpen] = useState(false);
@@ -119,6 +128,9 @@ function HomeScreen() {
         <Image src="https://i.pinimg.com/originals/96/4c/82/964c82250ef9951e3309b8e36d2bf9b9.gif" alt="Terrarium" />
       </ImageContainer>
       <Message>Image by <Hyperlink href="https://mini-moss.tumblr.com/about">Mini Moss</Hyperlink></Message>
+      <SpotifyEmbedContainer>
+        <SpotifyGetPlaylists/>
+      </SpotifyEmbedContainer>
       <BottomRightContainer>
         <StyledLink to="/mystats">MyStats</StyledLink>
         <HamburgerMenuButton isOpen={isOpen} onClick={handleClick}>
