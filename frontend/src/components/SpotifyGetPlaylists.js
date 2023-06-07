@@ -1,6 +1,19 @@
 import React, { useEffect, useState } from 'react';
-// import Select from 'react-select';
+import styled from 'styled-components';
 import axios from "axios";
+
+const ChangePlaylistButton = styled.button`
+  background-color: #63ad77;
+  border: none;
+  font-size: 12px;
+  padding: 10px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  color: white;
+  cursor: pointer;
+  margin: 4px 2px;
+`;
 
 function SpotifyEmbed({playlistID}) { 
 /*
@@ -105,7 +118,10 @@ export default function SpotifyGetPlaylists() {
             console.log(currentPlaylist)
             return (
                 <div>
-                    <select value={currPlaylistID} onChange={handleOptionChange} style={{maxWidth:'300px'}} id='playlistsDropdown'>
+                    <select value={currPlaylistID} onChange={handleOptionChange} 
+                        style={{maxWidth:'300px', backgroundColor:'#63ad77', color:'white', border:'none', padding:'5px 20px', margin:'2px 4px', textAlign:'center', display:'inline-block'}} 
+                        id='playlistsDropdown'>
+
                         {playlistData.map((playlist) => (
                         <option value={playlist['id']} key={playlist['name']}>
                             {playlist['name']}
@@ -132,7 +148,7 @@ export default function SpotifyGetPlaylists() {
 
     return (
         <div>
-            <button onClick={() => setChoosingNewPlaylist(true)} id='changePlaylistButton'>Change Playlist</button>
+            <ChangePlaylistButton onClick={() => setChoosingNewPlaylist(true)} id='changePlaylistButton' style={{border:'none'}}>Change Playlist</ChangePlaylistButton>
             {choosingNewPlaylist ? <ScrollingPlaylistMenu/> : null} 
             <SpotifyEmbed playlistID={currPlaylistID}/>
         </div>

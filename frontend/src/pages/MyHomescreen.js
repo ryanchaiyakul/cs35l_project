@@ -108,7 +108,7 @@ const SpotifyEmbedContainer = styled.div`
   position: absolute;
   border: none;
   max-width: 300px;
-  top: 20%;
+  top: 15%;
   right: 5%;
 `;
 
