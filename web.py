@@ -248,7 +248,7 @@ async def _upload_audio():
         form = await request.form
         files = await request.files
         try:
-            audio = files["audio_file"].read()
+            audio = files["audio"].read()
             title = form["title"]
             owner_id = form["owner_id"]
             tag = form["tag"]
