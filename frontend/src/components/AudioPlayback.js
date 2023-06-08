@@ -38,6 +38,7 @@ function AudioPlayback({playlist}) {
                 <SongTitle>{song.title}</SongTitle>
                 <audio
                     controls
+                    loop
                     src={`http://localhost:4000/_get_audio_data?title=${song.title}`}>
                         <a href={`http://localhost:4000/_get_audio_data?title=${song.title}`}>
                             Download audio

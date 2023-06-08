@@ -218,7 +218,15 @@ export default function SearchBar({ playlist, handlePlaylist, removeSong }) {
         </div>
       )}
 
-      <PlaylistContainer>
+
+      
+      
+    </Container>
+  );
+}
+
+/**
+ * <PlaylistContainer>
         <PlaylistTitle>Playlist</PlaylistTitle>
         {playlist.map(song => (
           <PlaylistItem key={song.title}>
@@ -234,6 +242,4 @@ export default function SearchBar({ playlist, handlePlaylist, removeSong }) {
           </PlaylistItem>
         ))}
       </PlaylistContainer>
-    </Container>
-  );
-}
+ */
