@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import AudioPlayback from './AudioPlayback';
 
 const Container = styled.div`
   background-color: #191414;
@@ -222,6 +223,13 @@ export default function SearchBar({ playlist, handlePlaylist, removeSong }) {
         {playlist.map(song => (
           <PlaylistItem key={song.title}>
             <SongTitle>{song.title}</SongTitle>
+            <audio
+                controls
+                src={`http://localhost:4000/_get_audio_data?title=${song.title}`}>
+                    <a href={`http://localhost:4000/_get_audio_data?title=${song.title}`}>
+                        Download audio
+                    </a>
+            </audio>
             <RemoveFromPlaylistButton onClick={() => removeSong(song)}>x</RemoveFromPlaylistButton>
           </PlaylistItem>
         ))}

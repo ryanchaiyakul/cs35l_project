@@ -276,6 +276,7 @@ async def _get_audio_metadata():
 @app.route("/_get_audio_data")
 async def _get_audio_data():
     title = request.args.get("title")
+    print(title)
     if not title:
         abort(400, "Must supply title query parameter!")
 
