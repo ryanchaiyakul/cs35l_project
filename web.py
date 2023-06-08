@@ -318,6 +318,27 @@ async def get_embed_html():
         abort(400, "Invalid spotify url")
     return embed["html"]
 
+@app.route("/_create_recommended_playlist")
+async def _create_recommended_playlist():
+    print(request.cookies.get("user_id"))
+    user_id = request.args.get("user_id")
+    if not user_id:
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
+
+    rec_playlist = await app.db.fetch_recommended_playlist(user.id)
+    if not rec_playlist:
+        data = await user.create_recommended_playlist()
+        rec_playlist = data["id"]
+        await app.db.insert_recommended_playlist(user.id, rec_playlist)
+    
+    recs = await user.get_recommendations(10)
+    track_ids = ",".join(t["id"] for t in recs["tracks"])
+    await user.update_playlist_tracks(rec_playlist, track_ids)
+    return rec_playlist
+
 
 if __name__ == "__main__":
     app.run()

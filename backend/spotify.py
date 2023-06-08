@@ -186,13 +186,11 @@ class User:  # Current user's spotify instance
     async def get_profile(self):
         return await self.get(CONSTANTS.API_URL + "me")
 
-    @cache.cache(strategy=cache.Strategy.timed)
+    # @cache.cache(strategy=cache.Strategy.timed)
     async def get_recommendations(self, limit=100):
         recents = await self.get_recent_tracks(10)
 
         tracks = ",".join([t["track"]["id"] for t in recents["items"]][:5])
-        print(tracks)
-
         params = {
             "limit": limit,
             "seed_tracks": tracks,
@@ -306,6 +304,36 @@ class User:  # Current user's spotify instance
     async def get_embed(self, url):
         query = urlencode({"url": url})
         return await self.get(CONSTANTS.BASE_URL + "oembed?" + query)
+    
+    async def get_playlist(self, user, uri):
+        """Get a playlist's info from its URI"""
+        return await self.make_spotify_req(
+            CONSTANTS.API_URL + "users/{0}/playlists/{1}{2}".format(user, uri)
+        )
+
+    async def create_recommended_playlist(self):
+        spotify_id = await self.get_spotify_id()
+        data = {
+            "name": "My Terrarium Recomendations",
+            "public": True,
+            "collaborative": False,
+            "description": "",
+        }
+        
+        return await self.client.http.post(
+            CONSTANTS.API_URL + f"users/{spotify_id}/playlists",
+            data=json.dumps(data),
+            headers=await self.auth(),
+            res_method="json",
+        )
+    
+    @cache.cache(strategy=cache.Strategy.timed)
+    async def update_playlist_tracks(self, playlist_id, track_ids):
+        spotify_id = await self.get_spotify_id()
+        query = urlencode({"uris": track_ids})
+        return await self.client.http.put(
+            CONSTANTS.API_URL + f"users/{spotify_id}/playlists/{playlist_id}/tracks?" + query
+        )
 
 
 class BaseUtils:
