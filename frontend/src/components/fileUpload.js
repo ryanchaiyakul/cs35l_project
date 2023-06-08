@@ -93,7 +93,7 @@ function FileUpload() {
     setErrorMessage('');
 
     const formData = new FormData();
-    formData.append('audio', selectedFile);
+    formData.append('audio_file', selectedFile);
     formData.append('title', title);
     formData.append('tag', tag);
     formData.append('owner_id', userId);
