@@ -78,7 +78,7 @@ export default function SpotifyGetPlaylists() {
     };
 
     async function getPlaylists(user_id) {
-        // if user_id = '', redirect to sign in
+        // if user_id = '', redirect to sign in with notice
         try {
             const response = await axios.get('http://localhost:4000/_get_user_playlist_names', {params: {user_id: user_id}});
             setFetchedPlaylists(true);
@@ -122,7 +122,7 @@ export default function SpotifyGetPlaylists() {
         if (playlistData === {} || !fetchedPlaylists) {
             // handle no playlists case (give a playlist of recommendations?)
             const FetchedPlaylistsMessage = "you must be logged in to spotify to see your playlists!"
-            const EmptyPlaylistDataMessage  = "you have no playlists! get a playlists of recommendations at PAGE_TBD"
+            const EmptyPlaylistDataMessage  = "you have no playlists! get a playlists of recommendations instead ^"
 
             return (
                 <>
@@ -160,6 +160,24 @@ export default function SpotifyGetPlaylists() {
         }
     }
 
+    async function getRecommendations() {
+        try {
+            // const response = await axios.get('http://localhost:4000/_get_user_playlist_names', {params: {user_id: user_id}})
+            
+            console.log("5hJ57gswRAZpEdE35qKVkt")
+            setCurrPlaylistID("5hJ57gswRAZpEdE35qKVkt")
+        } catch (error) {
+            if (error.response) {
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request)
+            {
+                console.log(error.request);
+            }
+        }
+    }
+
     useEffect(() => {
         const user_id = getCookie();
         setUserID(user_id);
@@ -175,7 +193,7 @@ export default function SpotifyGetPlaylists() {
     return (
         <div> 
             <SpotifyEmbed playlistID={currPlaylistID}/>
-            <ChangePlaylistButton onClick={() => setChoosingNewPlaylist(true)} id='changePlaylistButton' style={{border:'none'}}>Change Playlist</ChangePlaylistButton><PlayRecommendationsButton>Play Recommendations</PlayRecommendationsButton>
+            <ChangePlaylistButton onClick={() => setChoosingNewPlaylist(true)} id='changePlaylistButton' style={{border:'none'}}>Change Playlist</ChangePlaylistButton><PlayRecommendationsButton onClick={getRecommendations}>Play Recommendations</PlayRecommendationsButton>
             {choosingNewPlaylist ? <ScrollingPlaylistMenu/> : null}
         </div>
     );
