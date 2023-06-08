@@ -102,7 +102,7 @@ class DB:
         if self.json:
             with open("./jsondb/data.json", "r") as fp:
                 db = json.load(fp)
-                if db["audio"][title]:
+                if db["audio"].get(title):
                     raise asyncpg.UniqueViolationError("Duplicate Key")
                 db["audio"][title] = {
                     "owner_id": owner_id,

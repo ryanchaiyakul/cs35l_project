@@ -36,7 +36,13 @@ function AudioPlayback({playlist}) {
             {playlist.map(song => (
             <PlaylistItem key={song.title}>
                 <SongTitle>{song.title}</SongTitle>
-                Audio(`http://localhost:4000/_get_audio_data?title=${song.title}`)
+                <audio
+                    controls
+                    src={`http://localhost:4000/_get_audio_data?title=${song.title}`}>
+                        <a href={`http://localhost:4000/_get_audio_data?title=${song.title}`}>
+                            Download audio
+                        </a>
+                </audio>
             </PlaylistItem>
         ))}
         </div>

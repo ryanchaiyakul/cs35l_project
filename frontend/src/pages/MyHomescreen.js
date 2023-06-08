@@ -135,13 +135,13 @@ function HomeScreen() {
 
   return (
     <Container>
-      <HamburgerMenu mainPlaylist={mainPlaylist} setPlaylist={setPlaylist}/>
+      <HamburgerMenu mainPlaylist={mainPlaylist} handlePlaylist={handlePlaylist} removeSong={removeSong}/>
       <Title>My Terrarium</Title>
       <ImageContainer>
         <Image src="https://i.pinimg.com/originals/96/4c/82/964c82250ef9951e3309b8e36d2bf9b9.gif" alt="Terrarium" />
       </ImageContainer>
       <Message>Image by <Hyperlink href="https://mini-moss.tumblr.com/about">Mini Moss</Hyperlink></Message>
-      <AudioPlayback playlist={mainPlaylist} handlePlaylist={handlePlaylist} removeSong={removeSong}/>
+      <AudioPlayback playlist={mainPlaylist}/>
       <SpotifyEmbedContainer>
         <SpotifyGetPlaylists/>
       </SpotifyEmbedContainer>

@@ -248,7 +248,7 @@ async def _upload_audio():
         form = await request.form
         files = await request.files
         try:
-            audio = files["audio_file"].read()
+            audio = files["audio"].read()
             title = form["title"]
             owner_id = form["owner_id"]
             tag = form["tag"]
@@ -276,6 +276,7 @@ async def _get_audio_metadata():
 @app.route("/_get_audio_data")
 async def _get_audio_data():
     title = request.args.get("title")
+    print(title)
     if not title:
         abort(400, "Must supply title query parameter!")
 
