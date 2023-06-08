@@ -186,7 +186,7 @@ class User:  # Current user's spotify instance
     async def get_profile(self):
         return await self.get(CONSTANTS.API_URL + "me")
 
-    # @cache.cache(strategy=cache.Strategy.timed)
+    @cache.cache(strategy=cache.Strategy.timed)
     async def get_recommendations(self, limit=100):
         recents = await self.get_recent_tracks(10)
 
@@ -327,14 +327,20 @@ class User:  # Current user's spotify instance
             res_method="json",
         )
     
-    @cache.cache(strategy=cache.Strategy.timed)
-    async def update_playlist_tracks(self, playlist_id, track_ids):
-        spotify_id = await self.get_spotify_id()
-        query = urlencode({"uris": track_ids})
-        return await self.client.http.put(
-            CONSTANTS.API_URL + f"users/{spotify_id}/playlists/{playlist_id}/tracks?" + query
-        )
+    async def add_to_playlist(self, playlist_id, uris: list, position=None):
 
+        while uris:
+            data = {"uris": uris[:100]}  # 100 at a time spotify limit.
+            if position:
+                data["position"] = position
+            snapshot = await self.client.http.put(
+                CONSTANTS.API_URL + f"playlists/{playlist_id}/tracks",
+                data=json.dumps(data),
+                headers=await self.auth(),
+                res_method="json",
+            )
+            uris = uris[100:]
+        return snapshot
 
 class BaseUtils:
     def __init__(self) -> None:
@@ -407,4 +413,3 @@ class Track(BaseUtils):
         self.raw = data
         self.json = json.dumps(data)
         self.index = data.get("index")
-

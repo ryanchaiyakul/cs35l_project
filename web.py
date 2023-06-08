@@ -335,9 +335,9 @@ async def _create_recommended_playlist():
         rec_playlist = data["id"]
         await app.db.insert_recommended_playlist(user.id, rec_playlist)
     
-    recs = await user.get_recommendations(10)
-    track_ids = ",".join(t["id"] for t in recs["tracks"])
-    await user.update_playlist_tracks(rec_playlist, track_ids)
+    recs = await user.get_recommendations()
+    track_ids = [t["uri"] for t in recs["tracks"][:10]]
+    await user.add_to_playlist(rec_playlist, track_ids)
     return rec_playlist
 
 
