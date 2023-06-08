@@ -141,7 +141,6 @@ function HomeScreen() {
         <Image src="https://i.pinimg.com/originals/96/4c/82/964c82250ef9951e3309b8e36d2bf9b9.gif" alt="Terrarium" />
       </ImageContainer>
       <Message>Image by <Hyperlink href="https://mini-moss.tumblr.com/about">Mini Moss</Hyperlink></Message>
-      <AudioPlayback playlist={mainPlaylist}/>
       <SpotifyEmbedContainer>
         <SpotifyGetPlaylists/>
       </SpotifyEmbedContainer>
