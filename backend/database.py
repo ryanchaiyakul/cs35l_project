@@ -152,3 +152,32 @@ class DB:
                 WHERE title = $1;
                 """
         return await self.cxn.fetchval(query, title)
+
+    async def insert_recommended_playlist(self, user_id, playlist_id):
+        if self.json:
+            with open("./jsondb/data.json", "r") as fp:
+                db = json.load(fp)
+                db["users"][user_id]["recommended_playlist_id"] = playlist_id
+            with open("./jsondb/data.json", "w") as fp:
+                json.dump(db, fp, indent=2)
+        else:
+            query = """                
+                    UPDATE spotify_auth
+                    SET recommended_playlist_id = $1
+                    WHERE user_id = $2;
+                    """
+            await self.cxn.execute(query, playlist_id, user_id)
+
+
+    async def fetch_recommended_playlist(self, user_id):
+        if self.json:
+            with open("./jsondb/data.json", "r") as fp:
+                db = json.load(fp)
+                return db["users"][user_id].get("recommended_playlist_id")
+        else:
+            query = """                
+                    SELECT recommended_playlist_id
+                    FROM spotify_auth
+                    WHERE user_id = $1;
+                    """
+            return await self.cxn.fetchval(query, user_id)
