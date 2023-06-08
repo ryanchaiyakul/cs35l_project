@@ -3,6 +3,7 @@ import './css/App.css';
 import SearchBar from './components/searchBar.js'
 import FileUpload from './components/fileUpload.js'
 import HamburgerMenu from './components/hamburgerMenu'
+import LoginRedirect from './components/redirection'
 import HomeScreen from './pages/MyHomescreen.js'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import MyStats from './pages/MyStats.js';
