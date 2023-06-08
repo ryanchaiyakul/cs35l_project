@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import FileUpload from '../components/fileUpload.js';
 import HamburgerMenu from '../components/hamburgerMenu';
-import MyStats from './MyStats';
 import SpotifyGetPlaylists from '../components/SpotifyGetPlaylists.js';
 import { Link } from 'react-router-dom';
 import React, { useState, useEffect, useCallback} from 'react';
@@ -52,14 +51,6 @@ const BottomRightContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-`;
-
-const Button = styled.button`
-  font-size: 36px;
-  color: black;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
 `;
 
 const StyledLink = styled(Link)`
