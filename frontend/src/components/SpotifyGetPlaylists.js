@@ -5,14 +5,29 @@ import axios from "axios";
 const ChangePlaylistButton = styled.button`
   background-color: #63ad77;
   border: none;
+  width: 145px;
+  height: 30px;
   font-size: 12px;
-  padding: 10px 32px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   color: white;
   cursor: pointer;
   margin: 4px 2px;
+`;
+
+const PlayRecommendationsButton = styled.button`
+background-color: #63ad77;
+border: none;
+width: 145px;
+height: 30px;
+font-size: 12px;
+text-align: center;
+text-decoration: none;
+display: inline-block;
+color: white;
+cursor: pointer;
+margin: 4px 2px;
 `;
 
 function SpotifyEmbed({playlistID}) { 
@@ -58,6 +73,10 @@ export default function SpotifyGetPlaylists() {
         return '';
     };
 
+    const login = () => {
+        window.location.assign(window.location.href + "/connect")
+    };
+
     async function getPlaylists(user_id) {
         // if user_id = '', redirect to sign in
         try {
@@ -92,6 +111,12 @@ export default function SpotifyGetPlaylists() {
         setChoosingNewPlaylist(false);
     };
 
+    const handleNoLoginOK = () => {
+        login()
+        setChoosingNewPlaylist(false)
+        setUserID(getCookie())
+    };
+
     function ScrollingPlaylistMenu() {
         console.log("scrollingmenu called")
         if (playlistData === {} || !fetchedPlaylists) {
@@ -99,16 +124,11 @@ export default function SpotifyGetPlaylists() {
             const FetchedPlaylistsMessage = "you must be logged in to spotify to see your playlists!"
             const EmptyPlaylistDataMessage  = "you have no playlists! get a playlists of recommendations at PAGE_TBD"
 
-            if (!fetchedPlaylists)
-            {
-                getPlaylists('');
-            }
-
             return (
                 <>
                     <div>
                         {fetchedPlaylists ? EmptyPlaylistDataMessage : FetchedPlaylistsMessage}
-                        <button onClick={() => setChoosingNewPlaylist(false)}>OK!</button>
+                        <button onClick={() => handleNoLoginOK()}>OK!</button>
                     </div>
                 </>
             ); 
@@ -125,7 +145,7 @@ export default function SpotifyGetPlaylists() {
             return (
                 <div>
                     <select value={currPlaylistID} onChange={handleOptionChange} 
-                        style={{maxWidth:'300px', backgroundColor:'#63ad77', color:'white', border:'none', padding:'5px 20px', margin:'2px 4px', textAlign:'center', display:'inline-block'}} 
+                        style={{maxWidth:'295px', height:'30px', backgroundColor:'#63ad77', color:'white', border:'none', padding:'5px 20px', margin:'4px 2px', textAlign:'center', display:'inline-block'}} 
                         id='playlistsDropdown'>
 
                         {playlistData.map((playlist) => (
@@ -153,10 +173,10 @@ export default function SpotifyGetPlaylists() {
     }
 
     return (
-        <div>
-            <ChangePlaylistButton onClick={() => setChoosingNewPlaylist(true)} id='changePlaylistButton' style={{border:'none'}}>Change Playlist</ChangePlaylistButton>
-            {choosingNewPlaylist ? <ScrollingPlaylistMenu/> : null} 
+        <div> 
             <SpotifyEmbed playlistID={currPlaylistID}/>
+            <ChangePlaylistButton onClick={() => setChoosingNewPlaylist(true)} id='changePlaylistButton' style={{border:'none'}}>Change Playlist</ChangePlaylistButton><PlayRecommendationsButton>Play Recommendations</PlayRecommendationsButton>
+            {choosingNewPlaylist ? <ScrollingPlaylistMenu/> : null}
         </div>
     );
     
