@@ -163,7 +163,7 @@ export default function SpotifyGetPlaylists() {
     async function getRecommendations() {
         try {
             const response = await axios.get('http://localhost:4000//_create_recommended_playlist', {params: {user_id: userID}})
-            
+            // comment
             // console.log(response.data)
             setCurrPlaylistID(response.data)
         } catch (error) {
