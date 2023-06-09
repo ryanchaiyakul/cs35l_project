@@ -38,7 +38,7 @@ Copy the client ID and client secret and paste it into the config.py file templa
 ## Step 5: Initialize the config.py file.
 Create a file in the cs35l_project directory named config.py and paste the following template into it.
 Note:
-    If you wish to use the postgres database, update the corresponding fields below.
+    If you wish to use the postgres database, update the corresponding fields in the postgres class.
 
 ```py
 # example config.py file:
