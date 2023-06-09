@@ -3,31 +3,41 @@ import styled from 'styled-components';
 import axios from "axios";
 
 const ChangePlaylistButton = styled.button`
-  background-color: #63ad77;
-  border: none;
-  width: 145px;
-  height: 30px;
-  font-size: 12px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  color: white;
-  cursor: pointer;
-  margin: 4px 2px;
+    background-color: #63ad77;
+    border: none;
+    width: 145px;
+    height: 30px;
+    font-size: 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    color: white;
+    cursor: pointer;
+    
 `;
 
 const PlayRecommendationsButton = styled.button`
-background-color: #63ad77;
-border: none;
-width: 145px;
-height: 30px;
-font-size: 12px;
-text-align: center;
-text-decoration: none;
-display: inline-block;
-color: white;
-cursor: pointer;
-margin: 4px 2px;
+    background-color: #63ad77;
+    border: none;
+    width: 145px;
+    height: 30px;
+    font-size: 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    color: white;
+    cursor: pointer;
+    margin: 4px 2px;
+`;
+
+const ConfirmLoginButton = styled.button`
+    background-color: #63ad77;
+    border: none;
+    padding: 5px 10px;
+    margin: 4px 2px;
+    text-align: center;
+    color: white;
+    cursor: pointer;
 `;
 
 function SpotifyEmbed({playlistID}) { 
@@ -128,7 +138,7 @@ export default function SpotifyGetPlaylists() {
                 <>
                     <div>
                         {fetchedPlaylists ? EmptyPlaylistDataMessage : FetchedPlaylistsMessage}
-                        <button onClick={() => handleNoLoginOK()}>OK!</button>
+                        <ConfirmLoginButton onClick={() => handleNoLoginOK()}>OK</ConfirmLoginButton>
                     </div>
                 </>
             ); 
