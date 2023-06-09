@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
 const PlaylistItem = styled.div`
-  background-color: #282828;
+  background-color: transparent;
   padding: 10px;
   margin-bottom: 10px;
   display: flex;
@@ -14,10 +14,11 @@ const SongTitle = styled.p`
   color: #fff;
   font-size: 16px;
   margin-bottom: 5px;
+  vertical-align: middle;
 `;
 
 const RemoveFromPlaylistButton = styled.button`
-  background-color: #1db1ff;
+  background-color: transparent;
   color: #fff;
   padding: 5px 10px;
   margin-left: 10px;
@@ -31,6 +32,7 @@ function AudioBlock({title}) {
     // a custom hook to handle audio
     const useAudio = (url) => {
         const [audio] = useState(new Audio(url));
+        audio.id = `song_${title}`;
         const [playing, setPlaying] = useState(false);
     
         const togglePlayback = () => setPlaying(!playing);
@@ -50,14 +52,14 @@ function AudioBlock({title}) {
                 audio.removeEventListener('ended', () => setPlaying(false));
             };
         }, []);
-
-        // var slider = document.getElementById("volumeSlider");
-        // var volume;
-        // slider.oninput = function() {
-        //     volume = this.value;
-        // }
-        // audio.volume(volume/100)
     
+        window.addEventListener("DOMContentLoaded", (event) => { 
+          var volumeSlider = document.getElementById('volumeSlider')
+          volumeSlider.addEventListener("change", function() {
+            document.getElementById(audio.id).volume = volumeSlider.value / 100;
+          }, false);
+        });
+
         return [playing, togglePlayback];
     };
     
@@ -66,7 +68,7 @@ function AudioBlock({title}) {
     
         return (
             <div>
-                 <button onClick={togglePlayback}>
+                 <button onClick={togglePlayback} style={{backgroundColor:'#63ad77', color:'white', height:'30px', width:'30px', borderRadius:'4px', border:'none', textAlign:'center'}}>
                     {playing ? '☼' : '☀'}
                 </button>
                 {/* <input type='range' min={0} max={100} value={50} className='slider' id='volumeSlider'></input> */}
@@ -79,6 +81,15 @@ function AudioBlock({title}) {
             <AudioPlayer url={`http://localhost:4000/_get_audio_data?title=${title}`}/>
         </div>
     );
+}
+
+function updateSlider(sliderVal, title) 
+{
+  const audio_id = `song_${title}`;
+  var volumeSlider = document.getElementById('volumeSlider')
+  volumeSlider.addEventListener("change", function() {
+    document.getElementById(audio_id).volume = volumeSlider.value / 100;
+  });
 }
 
 /**
@@ -100,12 +111,21 @@ function AudioPlayback({playlist, removeSong}) {
         <div>
             {playlist.map(song => (
             <PlaylistItem key={song.title}>
-                <SongTitle>{song.title}</SongTitle>
+                <SongTitle>{song.title}     </SongTitle>
                 <AudioBlock title={song.title}/>
-                {/* <input type='range' min={0} max={100} value={50} className='slider' id='volumeSlider'></input> */}
+                {/* <script> 
+                  function updateSlider(slideAmount) {
+                    // let volumeSlider = document.getElementById("volumeSlider");
+                    var audio_id = `song_${song.title}`;
+                    var audio = document.getElementById(audio_id).volume(slideAmount);
+                  }
+                </script> */}
+                {/* <input type="range" min="0" max="100" value="50" class="slider" id="volumeSlider"></input> */}
+                {/* <input type='range' min={0} max={100} value={50} className='slider' id='volumeSlider' onChange={()=> updateSlider(this.value, song.title)}></input> */}
                 <RemoveFromPlaylistButton onClick={() => removeSong(song)}>x</RemoveFromPlaylistButton>
             </PlaylistItem>
         ))}
+          
         </div>
     );
 }
