@@ -18,6 +18,7 @@ const Form = styled.form`
 const ErrorMessage = styled.p`
   color: red;
   margin-bottom: 10px;
+  font-size: 16px;
 `;
 
 const StyledInput = styled.input`
@@ -118,7 +119,7 @@ function FileUpload() {
         console.log('File upload successful');
       } else {
         const responseBody = await response.json();
-        if (responseBody.error === 'duplicate_title') {
+        if (responseBody.status === 502) {
           setErrorMessage('A file with that same title has already been uploaded');
         } else {
           console.log('File upload failed');
