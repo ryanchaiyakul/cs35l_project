@@ -3,33 +3,43 @@ import styled from 'styled-components';
 import axios from "axios";
 
 const ChangePlaylistButton = styled.button`
-  border-radius: 4px;
-  background-color: #63ad77;
-  border: none;
-  width: 145px;
-  height: 30px;
-  font-size: 12px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  color: white;
-  cursor: pointer;
-  margin: 4px 2px;
+    background-color: #63ad77;
+    border: none;
+    width: 145px;
+    height: 30px;
+    font-size: 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    color: white;
+    cursor: pointer;
+    margin: 3px;
+    border-radius: 5px;
 `;
 
 const PlayRecommendationsButton = styled.button`
-border-radius: 4px;
-background-color: #63ad77;
-border: none;
-width: 145px;
-height: 30px;
-font-size: 12px;
-text-align: center;
-text-decoration: none;
-display: inline-block;
-color: white;
-cursor: pointer;
-margin: 4px 2px;
+    background-color: #63ad77;
+    border: none;
+    width: 145px;
+    height: 30px;
+    font-size: 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+`;
+
+const ConfirmLoginButton = styled.button`
+    background-color: #63ad77;
+    border: none;
+    padding: 5px 10px;
+    margin: auto;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
 `;
 
 function SpotifyEmbed({playlistID}) { 
@@ -76,7 +86,7 @@ export default function SpotifyGetPlaylists() {
     };
 
     const login = () => {
-        window.location.assign(window.location.href + "/connect")
+        window.location.assign("http://localhost:4000/connect")
     };
 
     async function getPlaylists(user_id) {
@@ -94,7 +104,7 @@ export default function SpotifyGetPlaylists() {
                 parsedPlaylists.push(singleplaylist)
             }
 
-            console.log(parsedPlaylists);
+            // console.log(parsedPlaylists);
             setPlaylistData(parsedPlaylists);
         } catch (error) {
             if (error.response) {
@@ -120,17 +130,17 @@ export default function SpotifyGetPlaylists() {
     };
 
     function ScrollingPlaylistMenu() {
-        console.log("scrollingmenu called")
+        // console.log("scrollingmenu called")
         if (playlistData === {} || !fetchedPlaylists) {
             // handle no playlists case (give a playlist of recommendations?)
-            const FetchedPlaylistsMessage = "You must be logged in to spotify to see your playlists!"
+            const FetchedPlaylistsMessage = "You must be logged in to spotify to see your playlists/get recommendations!"
             const EmptyPlaylistDataMessage  = "You have no playlists! Get a playlists of recommendations instead ^"
 
             return (
                 <>
                     <div>
                         {fetchedPlaylists ? EmptyPlaylistDataMessage : FetchedPlaylistsMessage}
-                        <button onClick={() => handleNoLoginOK()}>OK!</button>
+                        <ConfirmLoginButton onClick={() => handleNoLoginOK()}>OK</ConfirmLoginButton>
                     </div>
                 </>
             ); 
@@ -143,11 +153,11 @@ export default function SpotifyGetPlaylists() {
                 }
             });
 
-            console.log(currentPlaylist)
+            // console.log(currentPlaylist)
             return (
                 <div>
                     <select value={currPlaylistID} onChange={handleOptionChange} 
-                        style={{maxWidth:'295px', height:'30px', backgroundColor:'#63ad77', color:'white', border:'none', padding:'5px 20px', margin:'4px 2px', textAlign:'center', display:'inline-block'}} 
+                        style={{alignItems:'center', maxWidth:'295px', height:'30px', borderRadius:'5px', backgroundColor:'#63ad77', color:'white', border:'none', padding:'5px 20px', margin:'4px 2px', textAlign:'center', display:'inline-block'}} 
                         id='playlistsDropdown'>
 
                         {playlistData.map((playlist) => (
@@ -163,10 +173,13 @@ export default function SpotifyGetPlaylists() {
     }
 
     async function getRecommendations() {
+        if (!fetchedPlaylists) // not logged in
+        {
+            // console.log("inside if statement")
+            login();
+        }
         try {
-            const response = await axios.get('http://localhost:4000//_create_recommended_playlist', {params: {user_id: userID}})
-            
-            // console.log(response.data)
+            const response = await axios.get('http://localhost:4000/_create_recommended_playlist', {params: {user_id: userID}})
             setCurrPlaylistID(response.data)
         } catch (error) {
             if (error.response) {
@@ -187,15 +200,13 @@ export default function SpotifyGetPlaylists() {
             getPlaylists(user_id);
         }
     }, []);
-    
-    if (userID === '') {
-        console.log('no userID')
-    }
 
     return (
         <div> 
             <SpotifyEmbed playlistID={currPlaylistID}/>
+            <div style={{alignItems:'center'}}>
             <ChangePlaylistButton onClick={() => setChoosingNewPlaylist(true)} id='changePlaylistButton' style={{border:'none'}}>Change Playlist</ChangePlaylistButton><PlayRecommendationsButton onClick={getRecommendations}>Play Recommendations</PlayRecommendationsButton>
+            </div>
             {choosingNewPlaylist ? <ScrollingPlaylistMenu/> : null}
         </div>
     );
