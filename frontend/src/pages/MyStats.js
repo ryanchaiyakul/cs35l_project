@@ -12,18 +12,32 @@ import Header from "../components/header";
 
 
 //Function to get the user_id for the cookie. (Find which user's statistics to show)
-function getCookie() {
-    var key, value, i;
-    var cookieArray = document.cookie.split(';');
-    for (i = 0; i < cookieArray.length; i++) {
-        key = cookieArray[i].slice(0, cookieArray[i].indexOf("="));
-        value = cookieArray[i].slice(cookieArray[i].indexOf("=") + 1);
-        if (key == 'user_id') {
-            console.log("KEY: " + value)
+// function getCookie() {
+//     var key, value, i;
+//     var cookieArray = document.cookie.split(';');
+//     for (i = 0; i < cookieArray.length; i++) {
+//         key = cookieArray[i].slice(0, cookieArray[i].indexOf("="));
+//         value = cookieArray[i].slice(cookieArray[i].indexOf("=") + 1);
+//         if (key == 'user_id') {
+//             console.log("KEY: " + value)
+//             return value;
+//         }
+//     }
+//     return ''
+// }
+
+const getCookie = () => {
+    const cookieArray = document.cookie.split(';');
+    for (let i = 0; i < cookieArray.length; i++) {
+        const [key, value] = cookieArray[i].split('=');
+    
+        if (key.trim() === 'user_id') {
             return value;
         }
     }
-}
+    
+    return '';
+};
 
 
 function getURL(data) {
@@ -33,7 +47,10 @@ function getURL(data) {
 
     return URL;
 }
-//Retrieve recetnly played music
+
+function login() {
+    window.location.assign("http://localhost:4000/connect")
+};
 
 //Fetch data
 //Equivalent to http://localhost:4000/_get_user_stats?user_id=getCookie()
@@ -57,6 +74,10 @@ export default function MyStats() {
 
     //Render data to gather information
     useEffect(() => {
+        // console.log("cookie : " + getCookie())
+        // if (getCookie() === ''){
+        //     login()
+        // }
         async function check() {
             try {
                 setLoading(true);
@@ -70,6 +91,10 @@ export default function MyStats() {
             catch (error) {
                 setLoading(false);
                 console.log("ERROR!", error);
+                if (error.response.status == 404 || error.response.status == 400)
+                {
+                    login()
+                }
             }
         }
         check();
