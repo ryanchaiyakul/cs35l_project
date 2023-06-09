@@ -1,32 +1,16 @@
-# BACKEND SETUP GUIDE
+# SETUP GUIDE:
 
-## Step 1: Create a virtualenv
-
-Run the command:
+## Step 1:
+Clone this repository into your directory of choice using:
 ```console
-myuser@computer:~$ python3 -m venv .venv
+git clone https://github.com/ryanchaiyakul/cs35l_project
 ```
 
-## Step 2: Activate the virtual environment
+## Step 2:
+Ensure python3, pip, nodejs, and npm are all installed and up to date.
 
-#### Windows:
-```console
-myuser@computer:~$ .venv/Scripts/activate
-```
-#### MacOS/Linux:
-```console
-myuser@computer:~$ source .venv/bin/activate
-```
-
-## Step 3: Install requirements
-
-```console
-myuser@computer:~$ pip install -r requirements.txt
-```
-
-## Step 4: Install postgresql
-
-If no postgres is installed, default to json database.
+## Step 3 (OPTIONAL): Install postgresql
+If no postgres is installed, the app will default to a local json database.
 
 #### Linux:
 ```console
@@ -36,16 +20,11 @@ postgres@computer:~$ psql
 postgres=# \password
 postgres=# mypassword # this will be used in the config.py file
 postgres=# \q
-postgres@computer:~$ createdb CS35L
+postgres@computer:~$ createdb cs35l
 postgres@computer:~$ su -
 ```
-Mac users: Just install it with brew, should be plenty of resources online.
 
-Windows users: install wsl and ubuntu, then run the above commands in ubuntu terminal
-Here's a good tutorial: https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-10#5-install-your-first-package
-
-
-## Step 5: Configure Spotify Dev Portal
+## Step 4: Configure Spotify Client Via Dev Portal
 
 Go to https://developer.spotify.com/dashboard and click "Create App"
 Enter the following info:
@@ -54,9 +33,12 @@ App description: Recommendations/Stats/Audio
 Redirect URI: http://localhost:4000/connect
 Leave the rest blank and click save.
 
-Copy the client ID and client secret and paste it into the config.py file
+Copy the client ID and client secret and paste it into the config.py file template below:
 
-## Step 6: Initialize the config.py file.
+## Step 5: Initialize the config.py file.
+Create a file in the cs35l_project directory named config.py and paste the following template into it.
+Note:
+    If you wish to use the postgres database, update the corresponding fields below.
 
 ```py
 # example config.py file:
@@ -67,58 +49,22 @@ class WEB:
 
 
 class POSTGRES:
-    user = "postgres"
-    password = "postgres password" # enter your postgres password here
+    user = "postgres" # Your db admin postgres username (postgres is default)
+    password = "" # Your postgres database password
     host = "localhost" # or your IP address
-    port = 5432
-    name = "cs35l"
-    uri = f"postgres://{user}:{password}@{host}:{port}/{name}"
+    port = 5432 # Default port
+    name = "cs35l" # Your database name.
+    uri = f"postgres://{user}:{password}@{host}:{port}/{name}" # Leave unchanged.
 
 
 class SPOTIFY:
     client_id = "my client id" # get this from the spotify 
     client_secret = "my client secret" # get this from the spotify 
-    redirect_uri = WEB.base_url + "/connect" 
+    redirect_uri = WEB.base_url + "/connect"  # Leave unchanged
 ```
 
-# FRONTEND SETUP GUIDE
-
-## Step 1: Install npm and node
-
-#### Linux
+## Step 6: Run The App!
+Run the command from inside the cs35l_project:
 ```console
-myuser@computer:~$ sudo apt install nodejs
-myuser@computer:~$ sudo apt install npm
+./main.sh
 ```
-
-#### MacOS
-```console
-myuser@computer:~$ brew install node
-```
-
-## Move into the correct directory
-```console
-myuser@computer:~$ cd frontend
-```
-
-## Install dependencies
-```console
-myuser@computer:~$ npm install
-```
-
-## Install dependencies
-```console
-myuser@computer:~$ npm install
-```
-
-## Make frontend build
-```console
-myuser@computer:~$ npm run build
-```
-
-# RUN THE APP
-```console
-python web.py
-```
-
-
