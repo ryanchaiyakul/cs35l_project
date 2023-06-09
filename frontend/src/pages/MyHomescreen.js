@@ -124,7 +124,7 @@ const CloseButton = styled.button`
 const SpotifyEmbedContainer = styled.div`
   position: absolute;
   border: none;
-  max-width: 300px;
+  max-width: 30%;
   top: 20%;
   right: 5%;
 `;
