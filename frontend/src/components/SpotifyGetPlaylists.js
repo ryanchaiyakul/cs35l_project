@@ -74,7 +74,7 @@ export default function SpotifyGetPlaylists() {
     };
 
     const login = () => {
-        window.location.assign(window.location.href + "/connect")
+        window.location.assign("http://localhost:4000/connect")
     };
 
     async function getPlaylists(user_id) {
@@ -92,7 +92,7 @@ export default function SpotifyGetPlaylists() {
                 parsedPlaylists.push(singleplaylist)
             }
 
-            console.log(parsedPlaylists);
+            // console.log(parsedPlaylists);
             setPlaylistData(parsedPlaylists);
         } catch (error) {
             if (error.response) {
@@ -118,10 +118,10 @@ export default function SpotifyGetPlaylists() {
     };
 
     function ScrollingPlaylistMenu() {
-        console.log("scrollingmenu called")
+        // console.log("scrollingmenu called")
         if (playlistData === {} || !fetchedPlaylists) {
             // handle no playlists case (give a playlist of recommendations?)
-            const FetchedPlaylistsMessage = "you must be logged in to spotify to see your playlists!"
+            const FetchedPlaylistsMessage = "you must be logged in to spotify to see your playlists/get recommendations!"
             const EmptyPlaylistDataMessage  = "you have no playlists! get a playlists of recommendations instead ^"
 
             return (
@@ -141,7 +141,7 @@ export default function SpotifyGetPlaylists() {
                 }
             });
 
-            console.log(currentPlaylist)
+            // console.log(currentPlaylist)
             return (
                 <div>
                     <select value={currPlaylistID} onChange={handleOptionChange} 
@@ -161,10 +161,13 @@ export default function SpotifyGetPlaylists() {
     }
 
     async function getRecommendations() {
+        if (!fetchedPlaylists) // not logged in
+        {
+            // console.log("inside if statement")
+            login();
+        }
         try {
-            const response = await axios.get('http://localhost:4000//_create_recommended_playlist', {params: {user_id: userID}})
-            
-            // console.log(response.data)
+            const response = await axios.get('http://localhost:4000/_create_recommended_playlist', {params: {user_id: userID}})
             setCurrPlaylistID(response.data)
         } catch (error) {
             if (error.response) {
@@ -185,10 +188,6 @@ export default function SpotifyGetPlaylists() {
             getPlaylists(user_id);
         }
     }, []);
-    
-    if (userID === '') {
-        console.log('no userID')
-    }
 
     return (
         <div> 
