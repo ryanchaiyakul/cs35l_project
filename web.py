@@ -276,7 +276,6 @@ async def _get_audio_metadata():
 @app.route("/_get_audio_data")
 async def _get_audio_data():
     title = request.args.get("title")
-    print(title)
     if not title:
         abort(400, "Must supply title query parameter!")
 
@@ -321,7 +320,6 @@ async def get_embed_html():
 
 @app.route("/_create_recommended_playlist")
 async def _create_recommended_playlist():
-    print(request.cookies.get("user_id"))
     user_id = request.args.get("user_id")
     if not user_id:
         abort(400, "Must supply user_id query parameter!")
