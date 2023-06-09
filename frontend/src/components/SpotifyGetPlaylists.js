@@ -13,7 +13,8 @@ const ChangePlaylistButton = styled.button`
     display: inline-block;
     color: white;
     cursor: pointer;
-    
+    margin: 3px;
+    border-radius: 5px;
 `;
 
 const PlayRecommendationsButton = styled.button`
@@ -27,17 +28,18 @@ const PlayRecommendationsButton = styled.button`
     display: inline-block;
     color: white;
     cursor: pointer;
-    margin: 4px 2px;
+    border-radius: 5px;
 `;
 
 const ConfirmLoginButton = styled.button`
     background-color: #63ad77;
     border: none;
     padding: 5px 10px;
-    margin: 4px 2px;
+    margin: auto;
     text-align: center;
     color: white;
     cursor: pointer;
+    border-radius: 5px;
 `;
 
 function SpotifyEmbed({playlistID}) { 
@@ -155,7 +157,7 @@ export default function SpotifyGetPlaylists() {
             return (
                 <div>
                     <select value={currPlaylistID} onChange={handleOptionChange} 
-                        style={{maxWidth:'295px', height:'30px', backgroundColor:'#63ad77', color:'white', border:'none', padding:'5px 20px', margin:'4px 2px', textAlign:'center', display:'inline-block'}} 
+                        style={{alignItems:'center', maxWidth:'295px', height:'30px', borderRadius:'5px', backgroundColor:'#63ad77', color:'white', border:'none', padding:'5px 20px', margin:'4px 2px', textAlign:'center', display:'inline-block'}} 
                         id='playlistsDropdown'>
 
                         {playlistData.map((playlist) => (
@@ -202,7 +204,9 @@ export default function SpotifyGetPlaylists() {
     return (
         <div> 
             <SpotifyEmbed playlistID={currPlaylistID}/>
+            <div style={{alignItems:'center'}}>
             <ChangePlaylistButton onClick={() => setChoosingNewPlaylist(true)} id='changePlaylistButton' style={{border:'none'}}>Change Playlist</ChangePlaylistButton><PlayRecommendationsButton onClick={getRecommendations}>Play Recommendations</PlayRecommendationsButton>
+            </div>
             {choosingNewPlaylist ? <ScrollingPlaylistMenu/> : null}
         </div>
     );
