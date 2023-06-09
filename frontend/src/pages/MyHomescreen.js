@@ -31,6 +31,14 @@ const ImageContainer = styled.div`
   margin-bottom: 20px;
 `;
 
+const AudioContainer = styled.div`
+position: absolute;
+border: none;
+max-width: 300px;
+top: 20%;
+left: 5%;
+`;
+
 const Image = styled.img`
   width: 100%;
 `;
@@ -113,17 +121,6 @@ const SpotifyEmbedContainer = styled.div`
   right: 5%;
 `;
 
-const RemoveFromPlaylistButton = styled.button`
-  background-color: #1db1ff;
-  color: #fff;
-  padding: 5px 10px;
-  margin-left: 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-`;
-
 
 function HomeScreen() {
     const [isOpen, setIsOpen] = useState(false);
@@ -152,7 +149,9 @@ function HomeScreen() {
         <Image src="https://i.pinimg.com/originals/96/4c/82/964c82250ef9951e3309b8e36d2bf9b9.gif" alt="Terrarium" />
       </ImageContainer>
       <Message>Image by <Hyperlink href="https://mini-moss.tumblr.com/about">Mini Moss</Hyperlink></Message>
-      <AudioPlayback playlist={mainPlaylist}/>
+      <AudioContainer>
+        <AudioPlayback playlist={mainPlaylist} removeSong={removeSong}/>
+      </AudioContainer>
       <SpotifyEmbedContainer>
         <SpotifyGetPlaylists/>
       </SpotifyEmbedContainer>
