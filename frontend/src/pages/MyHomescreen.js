@@ -5,6 +5,7 @@ import HamburgerMenu from '../components/hamburgerMenu';
 import MyStats from './MyStats';
 import SpotifyGetPlaylists from '../components/SpotifyGetPlaylists.js';
 import { Link } from 'react-router-dom';
+import AudioPlayback from '../components/AudioPlayback.js';
 
 const Container = styled.div`
   background-color: #A7D2BD;
@@ -112,9 +113,32 @@ const SpotifyEmbedContainer = styled.div`
   right: 5%;
 `;
 
+const RemoveFromPlaylistButton = styled.button`
+  background-color: #1db1ff;
+  color: #fff;
+  padding: 5px 10px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+`;
+
 
 function HomeScreen() {
     const [isOpen, setIsOpen] = useState(false);
+    const [mainPlaylist, setPlaylist] = useState([]);
+
+    function handlePlaylist(song) {
+      if (!mainPlaylist.includes(song)) {
+        setPlaylist([...mainPlaylist, song]);
+      }
+    }
+  
+    function removeSong(removedSong) {
+      const newPlaylist = mainPlaylist.filter(song => song !== removedSong);
+      setPlaylist(newPlaylist);
+    }
 
     const handleClick = () => {
         setIsOpen(!isOpen);
@@ -122,12 +146,13 @@ function HomeScreen() {
 
   return (
     <Container>
-      <HamburgerMenu />
+      <HamburgerMenu mainPlaylist={mainPlaylist} handlePlaylist={handlePlaylist} removeSong={removeSong}/>
       <Title>My Terrarium</Title>
       <ImageContainer>
         <Image src="https://i.pinimg.com/originals/96/4c/82/964c82250ef9951e3309b8e36d2bf9b9.gif" alt="Terrarium" />
       </ImageContainer>
       <Message>Image by <Hyperlink href="https://mini-moss.tumblr.com/about">Mini Moss</Hyperlink></Message>
+      <AudioPlayback playlist={mainPlaylist}/>
       <SpotifyEmbedContainer>
         <SpotifyGetPlaylists/>
       </SpotifyEmbedContainer>
