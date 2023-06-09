@@ -46,36 +46,52 @@ const Hyperlink = styled.a`
   text-decoration: underline;
 `;
 
-const BottomRightContainer = styled.div`
+const TopLeftContainer = styled.div`
+  font-size: 20px;
   position: absolute;
-  bottom: 50px;
-  right: 50px;
+  top: 30px;
+  left: 30px;
   display: flex;
   flex-direction: row;
   align-items: flex-end;
 `;
 
-const Button = styled.button`
-  font-size: 36px;
-  color: black;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
+const ButtonLink = styled.a`
+  display: block;
+  width: inherit;
+  height: 25px;
+  background: #4E9CAF;
+  padding: 4px;
+  margin: 8px 2px;
+  border-radius: 4px;
+  text-align: center;
+  color: white;
+  line-height: 25px;
 `;
 
 const StyledLink = styled(Link)`
-  font-size: 38px;
-  margin-right: 50px; 
+  padding: 1px 6px;
+  margin-right: 20px; 
   color: black;
+  underline: none;
   background-color: transparent;
   border: none;
   cursor: pointer;
   text-decoration: none;
 `;
-
+const StyledA = styled.a`
+padding: 1px 6px;
+margin-right: 20px; 
+color: black;
+underline: none;
+background-color: transparent;
+border: none;
+cursor: pointer;
+text-decoration: none;
+`;
 const HamburgerMenuButton = styled.button`
   display: ${({ isOpen }) => (isOpen ? 'none' : 'block')};
-  font-size: 36px;
+  font-size: 20px;
   color: black;
   background-color: transparent;
   border: none;
@@ -85,9 +101,9 @@ const HamburgerMenuButton = styled.button`
 const HamburgerMenuContainer = styled.div`
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
   position: fixed;
-  bottom: 0;
-  right: 0;
-  width: 20%;
+  top: 0;
+  left: 0;
+  width: 30%;
   height: 25%;
   background-color: #191414;
   padding: 40px;
@@ -154,11 +170,12 @@ function HomeScreen() {
       <Message>Image by <Hyperlink href="https://mini-moss.tumblr.com/about">Mini Moss</Hyperlink></Message>
       <AudioPlayback playlist={mainPlaylist}/>
       <SpotifyEmbedContainer>
+        <ButtonLink><a href="/connect" style={{textDecoration: 'inherit', color: 'inherit'}}>Connect To Spotify</a></ButtonLink>
         <SpotifyGetPlaylists/>
       </SpotifyEmbedContainer>
-      <BottomRightContainer>
+      <TopLeftContainer>
         <StyledLink to="/mystats">My Stats</StyledLink>
-        <StyledLink to="/liked">Liked Tracks</StyledLink>
+        <StyledA><a href="/liked" style={{textDecoration: 'none', color: 'inherit'}}>Liked Tracks</a></StyledA>
 
         <HamburgerMenuButton isOpen={isOpen} onClick={handleClick}>
         Upload
@@ -167,7 +184,7 @@ function HomeScreen() {
         <CloseButton onClick={handleClick}>X</CloseButton>
         <FileUpload />
       </HamburgerMenuContainer>
-      </BottomRightContainer>
+      </TopLeftContainer>
     </Container>
   );
 }
