@@ -175,7 +175,7 @@ export default function MyStats() {
 
 
         return (
-            <div style={{ backgroundColor: '#1e3d59', height: '360vh' }} className="App" >
+            <div style={{ backgroundColor: '#A7D2BD', height: '360vh' }} className="App" >
                 <Header />
 
                 <div

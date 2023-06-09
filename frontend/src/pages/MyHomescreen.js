@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import FileUpload from '../components/fileUpload.js';
 import HamburgerMenu from '../components/hamburgerMenu';
@@ -54,36 +54,52 @@ const Hyperlink = styled.a`
   text-decoration: underline;
 `;
 
-const BottomRightContainer = styled.div`
+const TopLeftContainer = styled.div`
+  font-size: 20px;
   position: absolute;
-  bottom: 50px;
-  right: 50px;
+  top: 30px;
+  left: 30px;
   display: flex;
   flex-direction: row;
   align-items: flex-end;
 `;
 
-const Button = styled.button`
-  font-size: 36px;
-  color: black;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
+const ButtonLink = styled.a`
+  display: block;
+  width: inherit;
+  height: 25px;
+  background: #4E9CAF;
+  padding: 4px;
+  margin: 8px 2px;
+  border-radius: 4px;
+  text-align: center;
+  color: white;
+  line-height: 25px;
 `;
 
 const StyledLink = styled(Link)`
-  font-size: 38px;
-  margin-right: 50px; 
+  padding: 1px 6px;
+  margin-right: 20px; 
   color: black;
+  underline: none;
   background-color: transparent;
   border: none;
   cursor: pointer;
   text-decoration: none;
 `;
-
+const StyledA = styled.a`
+padding: 1px 6px;
+margin-right: 20px; 
+color: black;
+underline: none;
+background-color: transparent;
+border: none;
+cursor: pointer;
+text-decoration: none;
+`;
 const HamburgerMenuButton = styled.button`
   display: ${({ isOpen }) => (isOpen ? 'none' : 'block')};
-  font-size: 36px;
+  font-size: 20px;
   color: black;
   background-color: transparent;
   border: none;
@@ -93,12 +109,12 @@ const HamburgerMenuButton = styled.button`
 const HamburgerMenuContainer = styled.div`
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
   position: fixed;
-  bottom: 0;
-  right: 0;
-  width: 20%;
-  height: 25%;
+  top: 0;
+  left: 0;
+  width: 30%;
+  height: 30%;
   background-color: #191414;
-  padding: 40px;
+  padding: 10px;
   justify-content: center;
   align-items: center;
 `;
@@ -116,20 +132,49 @@ const CloseButton = styled.button`
 const SpotifyEmbedContainer = styled.div`
   position: absolute;
   border: none;
-  max-width: 300px;
+  max-width: 30%;
   top: 20%;
   right: 5%;
 `;
 
+const AudioContainer = styled.div`
+  position: absolute;
+  padding: 20px;
+  background: linear-gradient(to bottom, #6BACBA 50%, #398393 65%); /* Gradient background */
+  border-radius: 8px;
+  width: 18%;
+  height: 50%;
+  top: 20%;
+  left: 5%;
+  overflow: auto; /* Enable scrolling when content exceeds container height */
+`;
+
+const PlaylistTitle = styled.div`
+  color: white;
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-weight: bold;
+`;
 
 function HomeScreen() {
     const [isOpen, setIsOpen] = useState(false);
     const [mainPlaylist, setPlaylist] = useState([]);
+    const [addedToPlaylist, setAddedToPlaylist] = useState(false); 
+
+    useEffect(() => {
+      if (addedToPlaylist) {
+        setTimeout(() => {
+          setAddedToPlaylist(false);
+        }, 3000); // Clear the "Added to playlist!" message after 3 seconds
+      }
+    }, [addedToPlaylist]);
 
     function handlePlaylist(song) {
       if (!mainPlaylist.includes(song)) {
         setPlaylist([...mainPlaylist, song]);
       }
+      setAddedToPlaylist(true);
     }
   
     function removeSong(removedSong) {
@@ -143,21 +188,20 @@ function HomeScreen() {
 
   return (
     <Container>
-      <HamburgerMenu mainPlaylist={mainPlaylist} handlePlaylist={handlePlaylist} removeSong={removeSong}/>
+      <HamburgerMenu mainPlaylist={mainPlaylist} handlePlaylist={handlePlaylist} addedToPlaylist={addedToPlaylist}/>
       <Title>My Terrarium</Title>
       <ImageContainer>
         <Image src="https://i.pinimg.com/originals/96/4c/82/964c82250ef9951e3309b8e36d2bf9b9.gif" alt="Terrarium" />
       </ImageContainer>
       <Message>Image by <Hyperlink href="https://mini-moss.tumblr.com/about">Mini Moss</Hyperlink></Message>
-      <AudioContainer>
-        <AudioPlayback playlist={mainPlaylist} removeSong={removeSong}/>
-      </AudioContainer>
+      <AudioPlayback playlist={mainPlaylist}/>
       <SpotifyEmbedContainer>
+        <ButtonLink><a href="/connect" style={{textDecoration: 'inherit', color: 'inherit'}}>Connect To Spotify</a></ButtonLink>
         <SpotifyGetPlaylists/>
       </SpotifyEmbedContainer>
-      <BottomRightContainer>
+      <TopLeftContainer>
         <StyledLink to="/mystats">My Stats</StyledLink>
-        <StyledLink to="/liked">Liked Tracks</StyledLink>
+        <StyledA><a href="/liked" style={{textDecoration: 'none', color: 'inherit'}}>Liked Tracks</a></StyledA>
 
         <HamburgerMenuButton isOpen={isOpen} onClick={handleClick}>
         Upload
@@ -166,7 +210,7 @@ function HomeScreen() {
         <CloseButton onClick={handleClick}>X</CloseButton>
         <FileUpload />
       </HamburgerMenuContainer>
-      </BottomRightContainer>
+      </TopLeftContainer>
     </Container>
   );
 }

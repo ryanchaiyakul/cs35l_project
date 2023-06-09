@@ -75,7 +75,7 @@ const SongTitle = styled.p`
 `;
 
 const AddToPlaylistButton = styled.button`
-  background-color: #1db1ff;
+  background-color: #69B38E;
   color: #fff;
   padding: 5px 10px;
   border: none;
@@ -85,36 +85,36 @@ const AddToPlaylistButton = styled.button`
 
 `;
 
-const PlaylistContainer = styled.div`
-  margin-top: 20px;
-`;
-
-const PlaylistTitle = styled.h2`
-  font-size: 20px;
-  margin-bottom: 10px;
-`;
-
-const PlaylistItem = styled.div`
-  background-color: #282828;
-  padding: 10px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const RemoveFromPlaylistButton = styled.button`
-  background-color: #1db1ff;
+const SmallText = styled.p`
   color: #fff;
-  padding: 5px 10px;
-  margin-left: 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-`;
+  font-size: 16px;
+`
 
-export default function SearchBar({ playlist, handlePlaylist, removeSong }) {
+// const PlaylistContainer = styled.div`
+//   margin-top: 20px;
+// `;
+
+// const PlaylistTitle = styled.h2`
+//   font-size: 20px;
+//   margin-bottom: 10px;
+// `;
+
+// const PlaylistItem = styled.div`
+//   background-color: #282828;
+//   padding: 10px;
+//   margin-bottom: 10px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+// `;
+
+export default function SearchBar({ handlePlaylist, addedToPlaylist, }) {
+  // const songs =[
+  //   {
+  //     title: 'ducks',
+  //     tag: 'animals',
+  //   }
+  // ]
   const [songs, setSongs] = useState([]);
 
   // fetch list of audios and their metadata
@@ -209,6 +209,7 @@ export default function SearchBar({ playlist, handlePlaylist, removeSong }) {
             ))}
             <ClearButton onClick={handleClearTags}>clear all</ClearButton>
           </TagsContainer>
+          {addedToPlaylist && <SmallText>Added to playlist!</SmallText>} 
           {filteredSongs.map(song => (
             <SongContainer key={song.title}>
               <SongTitle>{song.title}</SongTitle>
@@ -218,28 +219,6 @@ export default function SearchBar({ playlist, handlePlaylist, removeSong }) {
         </div>
       )}
 
-
-      
-      
     </Container>
   );
 }
-
-/**
- * <PlaylistContainer>
-        <PlaylistTitle>Playlist</PlaylistTitle>
-        {playlist.map(song => (
-          <PlaylistItem key={song.title}>
-            <SongTitle>{song.title}</SongTitle>
-            <audio
-                controls
-                src={`http://localhost:4000/_get_audio_data?title=${song.title}`}>
-                    <a href={`http://localhost:4000/_get_audio_data?title=${song.title}`}>
-                        Download audio
-                    </a>
-            </audio>
-            <RemoveFromPlaylistButton onClick={() => removeSong(song)}>x</RemoveFromPlaylistButton>
-          </PlaylistItem>
-        ))}
-      </PlaylistContainer>
- */

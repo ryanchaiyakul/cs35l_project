@@ -12,8 +12,9 @@ from config import SPOTIFY
 
 from datetime import date
 
+
 class CONSTANTS:
-    GREEN_ICON = "https://cdn.discordapp.com/attachments/872338764276576266/932399347289706556/spotify_green.png" # Spotify icon
+    GREEN_ICON = "https://cdn.discordapp.com/attachments/872338764276576266/932399347289706556/spotify_green.png"  # Spotify icon
     BASE_URL = "https://open.spotify.com/"
     API_URL = "https://api.spotify.com/v1/"
     AUTH_URL = "https://accounts.spotify.com/authorize"
@@ -304,7 +305,7 @@ class User:  # Current user's spotify instance
     async def get_embed(self, url):
         query = urlencode({"url": url})
         return await self.get(CONSTANTS.BASE_URL + "oembed?" + query)
-    
+
     async def get_playlist(self, user, uri):
         """Get a playlist's info from its URI"""
         return await self.make_spotify_req(
@@ -319,14 +320,14 @@ class User:  # Current user's spotify instance
             "collaborative": False,
             "description": "",
         }
-        
+
         return await self.client.http.post(
             CONSTANTS.API_URL + f"users/{spotify_id}/playlists",
             data=json.dumps(data),
             headers=await self.auth(),
             res_method="json",
         )
-    
+
     async def add_to_playlist(self, playlist_id, uris: list, position=None):
 
         while uris:
@@ -341,6 +342,7 @@ class User:  # Current user's spotify instance
             )
             uris = uris[100:]
         return snapshot
+
 
 class BaseUtils:
     def __init__(self) -> None:
@@ -359,14 +361,14 @@ class BaseUtils:
     def _release_date(self, date_str):
         date_parts = date_str.split("-")
         date_parts = [int(dp) for dp in date_parts]
-        
+
         if len(date_parts) == 1 or len(date_parts) == 2:
             return date_parts[0]
-        
+
         date_obj = date(*date_parts)
 
         return date_obj.__format__("%B %d, %Y")
-    
+
     def parse_duration(self, duration: int):
         """
         Helper function to get visually pleasing
@@ -393,6 +395,7 @@ class BaseUtils:
             value = "LIVE"
 
         return value
+
 
 class Track(BaseUtils):
     def __init__(self, data, *, quality="best"):

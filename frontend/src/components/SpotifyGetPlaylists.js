@@ -133,8 +133,8 @@ export default function SpotifyGetPlaylists() {
         // console.log("scrollingmenu called")
         if (playlistData === {} || !fetchedPlaylists) {
             // handle no playlists case (give a playlist of recommendations?)
-            const FetchedPlaylistsMessage = "you must be logged in to spotify to see your playlists/get recommendations!"
-            const EmptyPlaylistDataMessage  = "you have no playlists! get a playlists of recommendations instead ^"
+            const FetchedPlaylistsMessage = "You must be logged in to spotify to see your playlists/get recommendations!"
+            const EmptyPlaylistDataMessage  = "You have no playlists! Get a playlists of recommendations instead ^"
 
             return (
                 <>

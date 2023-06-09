@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
-const PlaylistItem = styled.div`
+const PlaylistContainer = styled.div`
   background-color: transparent;
   padding: 10px;
-  margin-bottom: 10px;
+  border-radius: 10px;
+`;
+
+const PlaylistItem = styled.div`
+  background-color: #B8BFC1;
+  padding: 5px 10px; /* Adjusted padding */
+  margin-bottom: 5px; /* Adjusted margin */
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-radius: 5px;
+  height: 30px;
+  width: 95%;
 `;
 
 const SongTitle = styled.p`
@@ -17,9 +26,15 @@ const SongTitle = styled.p`
   vertical-align: middle;
 `;
 
+
+const StyledAudio = styled.audio`
+  height: 90%; /* Adjusted height */
+  width: 90%; /* Adjusted width */
+`;
+
 const RemoveFromPlaylistButton = styled.button`
-  background-color: transparent;
-  color: #fff;
+  background-color: #fff;
+  color: black;
   padding: 5px 10px;
   margin-left: 10px;
   border: none;
