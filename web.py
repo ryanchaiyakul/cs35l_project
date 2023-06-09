@@ -51,7 +51,6 @@ class CS35L(Quart):
         self.static_folder = "./frontend/build/static"
         self.template_folder = "./frontend/build"
 
-
         self.http = http.Utils()
         self.db = database.DB(self.loop)
         self.secret_key = secrets.token_urlsafe(64)
@@ -276,7 +275,6 @@ async def _get_audio_metadata():
 @app.route("/_get_audio_data")
 async def _get_audio_data():
     title = request.args.get("title")
-    print(title)
     if not title:
         abort(400, "Must supply title query parameter!")
 
@@ -319,9 +317,9 @@ async def get_embed_html():
         abort(400, "Invalid spotify url")
     return embed["html"]
 
+
 @app.route("/_create_recommended_playlist")
 async def _create_recommended_playlist():
-    print(request.cookies.get("user_id"))
     user_id = request.args.get("user_id")
     if not user_id:
         abort(400, "Must supply user_id query parameter!")
@@ -334,7 +332,7 @@ async def _create_recommended_playlist():
         data = await user.create_recommended_playlist()
         rec_playlist = data["id"]
         await app.db.insert_recommended_playlist(user.id, rec_playlist)
-    
+
     recs = await user.get_recommendations()
     track_ids = [t["uri"] for t in recs["tracks"][:10]]
     await user.add_to_playlist(rec_playlist, track_ids)

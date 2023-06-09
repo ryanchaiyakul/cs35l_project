@@ -67,7 +67,7 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-const HamburgerMenu = ({mainPlaylist, handlePlaylist, removeSong}) => {
+const HamburgerMenu = ({mainPlaylist, handlePlaylist, addedToPlaylist}) => {
   const [isPopupOpen, setPopupOpen] = useState(false);
 
   const handleMenuClick = () => {
@@ -89,7 +89,7 @@ const HamburgerMenu = ({mainPlaylist, handlePlaylist, removeSong}) => {
       {isPopupOpen && (
         <Popup>
           <CloseButton onClick={closePopup}>Close</CloseButton>
-          <SearchBar playlist={mainPlaylist} handlePlaylist={handlePlaylist} removeSong={removeSong} />
+          <SearchBar playlist={mainPlaylist} handlePlaylist={handlePlaylist} addedToPlaylist={addedToPlaylist}/>
         </Popup>
       )}
     </div>

@@ -168,7 +168,6 @@ class DB:
                     """
             await self.cxn.execute(query, playlist_id, user_id)
 
-
     async def fetch_recommended_playlist(self, user_id):
         if self.json:
             with open("./jsondb/data.json", "r") as fp:

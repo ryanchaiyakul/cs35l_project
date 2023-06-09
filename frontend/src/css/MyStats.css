@@ -112,12 +112,12 @@
 
 /* For embedded links */
 .a {
-    color: #FFF;
+    color: #783937;
     float: right;
     text-decoration: 'none';
 }
 .a:hover{
-    color:#CED46A;
+    color:#FC766A;
 }
 
 
@@ -135,7 +135,7 @@
     width: 100%;
     padding: 0px 0;
     position: fixed;
-    background-color: #f5f0e1;
+    background-color: #6883BC;
 
     /* Fixes the position */
     z-index:1;

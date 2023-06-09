@@ -8,7 +8,7 @@ fi
 # Run build if folder does not exist
 if [ ! -d "frontend/build" ]; then
     echo "Creating frontend build"
-    #npm --prefix frontend i > /dev/null
+    npm --prefix frontend i > /dev/null
     npm run build --prefix frontend > /dev/null
 else
     echo "Frontend build already exists"
