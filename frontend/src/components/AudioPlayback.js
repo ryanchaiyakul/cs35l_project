@@ -68,7 +68,7 @@ function AudioBlock({title}) {
     
         return (
             <div>
-                 <button onClick={togglePlayback} style={{backgroundColor:'#63ad77', color:'white', height:'30px', width:'30px', borderRadius:'4px', border:'none', textAlign:'center'}}>
+                 <button onClick={togglePlayback} style={{backgroundColor:'#6bbec9', color:'white', height:'30px', width:'30px', borderRadius:'4px', border:'none', textAlign:'center'}}>
                     {playing ? '☼' : '☀'}
                 </button>
                 {/* <input type='range' min={0} max={100} value={50} className='slider' id='volumeSlider'></input> */}
