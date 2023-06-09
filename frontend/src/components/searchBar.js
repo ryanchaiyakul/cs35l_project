@@ -85,40 +85,51 @@ const AddToPlaylistButton = styled.button`
 
 `;
 
-const PlaylistContainer = styled.div`
-  margin-top: 20px;
-`;
+const SmallText = styled.p`
+  color: #fff;
+  font-size: 12px;
+`
 
-const PlaylistTitle = styled.h2`
-  font-size: 20px;
-  margin-bottom: 10px;
-`;
+// const PlaylistContainer = styled.div`
+//   margin-top: 20px;
+// `;
 
-const PlaylistItem = styled.div`
-  background-color: #282828;
-  padding: 10px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
+// const PlaylistTitle = styled.h2`
+//   font-size: 20px;
+//   margin-bottom: 10px;
+// `;
 
-export default function SearchBar({ playlist, handlePlaylist }) {
-  const [songs, setSongs] = useState([]);
+// const PlaylistItem = styled.div`
+//   background-color: #282828;
+//   padding: 10px;
+//   margin-bottom: 10px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+// `;
 
-  // fetch list of audios and their metadata
-  useEffect(() => {
-    const fetchAudioMetadata = async () => {
-      try {
-        const response = await axios.get(`http://localhost:4000/_get_audio_metadata`);
-        const songs = response.data;
-        setSongs(songs);
-      } catch (error) {
-        console.error('Error fetching audio metadata:', error);
-      }
-    };
-    fetchAudioMetadata();
-  }, []);
+export default function SearchBar({playlist, handlePlaylist, addedToPlaylist, }) {
+  const songs =[
+    {
+      title: 'ducks',
+      tag: 'animals',
+    }
+  ]
+  // const [songs, setSongs] = useState([]);
+
+  // // fetch list of audios and their metadata
+  // useEffect(() => {
+  //   const fetchAudioMetadata = async () => {
+  //     try {
+  //       const response = await axios.get(`http://localhost:4000/_get_audio_metadata`);
+  //       const songs = response.data;
+  //       setSongs(songs);
+  //     } catch (error) {
+  //       console.error('Error fetching audio metadata:', error);
+  //     }
+  //   };
+  //   fetchAudioMetadata();
+  // }, []);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
@@ -201,15 +212,13 @@ export default function SearchBar({ playlist, handlePlaylist }) {
           {filteredSongs.map(song => (
             <SongContainer key={song.title}>
               <SongTitle>{song.title}</SongTitle>
+              {addedToPlaylist && <SmallText>Added to playlist!</SmallText>} 
               <AddToPlaylistButton onClick={() => handlePlaylist(song)}>+</AddToPlaylistButton>
             </SongContainer>
           ))}
         </div>
       )}
 
-
-      
-      
     </Container>
   );
 }
