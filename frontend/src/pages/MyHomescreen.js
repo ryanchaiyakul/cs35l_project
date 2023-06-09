@@ -60,6 +60,7 @@ const ButtonLink = styled.a`
   display: block;
   width: inherit;
   height: 25px;
+  width: 65%;
   background: #4E9CAF;
   padding: 4px;
   margin: 8px 2px;
@@ -124,7 +125,7 @@ const CloseButton = styled.button`
 const SpotifyEmbedContainer = styled.div`
   position: absolute;
   border: none;
-  max-width: 30%;
+  width: 30%;
   top: 20%;
   right: 5%;
 `;
