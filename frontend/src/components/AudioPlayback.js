@@ -32,6 +32,7 @@ function AudioBlock({title}) {
     const useAudio = (url) => {
         const [audio] = useState(new Audio(url));
         const [playing, setPlaying] = useState(false);
+        const [volume, setVolume] = useState(50);
     
         const togglePlayback = () => setPlaying(!playing);
     
@@ -51,6 +52,10 @@ function AudioBlock({title}) {
             };
         }, []);
 
+        useEffect(() => {
+            audio.volume = volume / 100;
+        }, [volume]);
+
         // var slider = document.getElementById("volumeSlider");
         // var volume;
         // slider.oninput = function() {
@@ -58,25 +63,38 @@ function AudioBlock({title}) {
         // }
         // audio.volume(volume/100)
     
-        return [playing, togglePlayback];
+        return [playing, togglePlayback, volume, setVolume];
     };
     
-    const AudioPlayer = ({ url }) => {
-        const [playing, togglePlayback] = useAudio(url);
+    const [playing, togglePlayback, volume, setVolume] = useAudio(`http://localhost:4000/_get_audio_data?title=${title}`);
+
+    const AudioPlayer = ({ playing, togglePlayback, volume, setVolume }) => {
+        
     
+        window.onload = init;
+
+        function init(){
+            var slider = document.getElementById("volumeSlider");
+
+            slider.oninput = function() {
+                console.log(this.value);
+                setVolume(this.value);
+            }
+        }
+
         return (
             <div>
                  <button onClick={togglePlayback}>
                     {playing ? '☼' : '☀'}
                 </button>
-                {/* <input type='range' min={0} max={100} value={50} className='slider' id='volumeSlider'></input> */}
+                <input type='range' min={0} max={100} value={50} className='slider' id='volumeSlider'/>
             </div>
         );
     };
 
     return (
         <div>
-            <AudioPlayer url={`http://localhost:4000/_get_audio_data?title=${title}`}/>
+            <AudioPlayer playing={playing} togglePlayback={togglePlayback} volume={volume} setVolume={setVolume}/>
         </div>
     );
 }
