@@ -32,7 +32,18 @@ const StyledAudio = styled.audio`
   width: 90%; /* Adjusted width */
 `;
 
-function AudioPlayback({ playlist }) {
+const RemoveFromPlaylistButton = styled.button`
+  background-color: #1db1ff;
+  color: #fff;
+  padding: 5px 10px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+`;
+
+function AudioPlayback({ playlist, removeSong }) {
   return (
     <PlaylistContainer>
       {playlist.map((song) => (
@@ -47,6 +58,7 @@ function AudioPlayback({ playlist }) {
               Download audio
             </a>
           </StyledAudio>
+          <RemoveFromPlaylistButton onClick={() => removeSong(song)}>x</RemoveFromPlaylistButton>
         </PlaylistItem>
       ))}
     </PlaylistContainer>

@@ -104,7 +104,7 @@ const HamburgerMenuContainer = styled.div`
   top: 0;
   left: 0;
   width: 30%;
-  height: 25%;
+  height: 30%;
   background-color: #191414;
   padding: 40px;
   justify-content: center;

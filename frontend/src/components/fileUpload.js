@@ -118,8 +118,7 @@ function FileUpload() {
       if (response.ok) {
         console.log('File upload successful');
       } else {
-        const responseBody = await response.json();
-        if (responseBody.status === 502) {
+        if (response.status === 502) {
           setErrorMessage('A file with that same title has already been uploaded');
         } else {
           console.log('File upload failed');
