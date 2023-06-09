@@ -27,6 +27,59 @@ const RemoveFromPlaylistButton = styled.button`
   font-size: 14px;
 `;
 
+function AudioBlock({title}) {
+    // a custom hook to handle audio
+    const useAudio = (url) => {
+        const [audio] = useState(new Audio(url));
+        const [playing, setPlaying] = useState(false);
+    
+        const togglePlayback = () => setPlaying(!playing);
+    
+        useEffect(() => {
+            if (playing) {
+                audio.play();
+            }
+            else {
+                audio.pause();
+            }
+        }, [playing]);
+    
+        useEffect(() => {
+            audio.addEventListener('ended', () => setPlaying(false));
+            return () => {
+                audio.removeEventListener('ended', () => setPlaying(false));
+            };
+        }, []);
+
+        // var slider = document.getElementById("volumeSlider");
+        // var volume;
+        // slider.oninput = function() {
+        //     volume = this.value;
+        // }
+        // audio.volume(volume/100)
+    
+        return [playing, togglePlayback];
+    };
+    
+    const AudioPlayer = ({ url }) => {
+        const [playing, togglePlayback] = useAudio(url);
+    
+        return (
+            <div>
+                 <button onClick={togglePlayback}>
+                    {playing ? '☼' : '☀'}
+                </button>
+                {/* <input type='range' min={0} max={100} value={50} className='slider' id='volumeSlider'></input> */}
+            </div>
+        );
+    };
+
+    return (
+        <div>
+            <AudioPlayer url={`http://localhost:4000/_get_audio_data?title=${title}`}/>
+        </div>
+    );
+}
 
 /**
  * Returns HTML Audio Elements for every song in the passed in playlist prop
@@ -48,14 +101,8 @@ function AudioPlayback({playlist, removeSong}) {
             {playlist.map(song => (
             <PlaylistItem key={song.title}>
                 <SongTitle>{song.title}</SongTitle>
-                <audio
-                    controls
-                    loop
-                    src={`http://localhost:4000/_get_audio_data?title=${song.title}`}>
-                        <a href={`http://localhost:4000/_get_audio_data?title=${song.title}`}>
-                            Download audio
-                        </a>
-                </audio>
+                <AudioBlock title={song.title}/>
+                {/* <input type='range' min={0} max={100} value={50} className='slider' id='volumeSlider'></input> */}
                 <RemoveFromPlaylistButton onClick={() => removeSong(song)}>x</RemoveFromPlaylistButton>
             </PlaylistItem>
         ))}
