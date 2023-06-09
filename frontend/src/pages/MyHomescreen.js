@@ -31,14 +31,6 @@ const ImageContainer = styled.div`
   margin-bottom: 20px;
 `;
 
-const AudioContainer = styled.div`
-position: absolute;
-border: none;
-max-width: 300px;
-top: 20%;
-left: 5%;
-`;
-
 const Image = styled.img`
   width: 100%;
 `;
