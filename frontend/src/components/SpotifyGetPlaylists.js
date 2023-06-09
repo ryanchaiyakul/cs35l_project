@@ -3,16 +3,33 @@ import styled from 'styled-components';
 import axios from "axios";
 
 const ChangePlaylistButton = styled.button`
+  border-radius: 4px;
   background-color: #63ad77;
   border: none;
+  width: 145px;
+  height: 30px;
   font-size: 12px;
-  padding: 10px 32px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   color: white;
   cursor: pointer;
   margin: 4px 2px;
+`;
+
+const PlayRecommendationsButton = styled.button`
+border-radius: 4px;
+background-color: #63ad77;
+border: none;
+width: 145px;
+height: 30px;
+font-size: 12px;
+text-align: center;
+text-decoration: none;
+display: inline-block;
+color: white;
+cursor: pointer;
+margin: 4px 2px;
 `;
 
 function SpotifyEmbed({playlistID}) { 
@@ -58,8 +75,12 @@ export default function SpotifyGetPlaylists() {
         return '';
     };
 
+    const login = () => {
+        window.location.assign(window.location.href + "/connect")
+    };
+
     async function getPlaylists(user_id) {
-        // if user_id = '', redirect to sign in
+        // if user_id = '', redirect to sign in with notice
         try {
             const response = await axios.get('http://localhost:4000/_get_user_playlist_names', {params: {user_id: user_id}});
             setFetchedPlaylists(true);
@@ -92,17 +113,24 @@ export default function SpotifyGetPlaylists() {
         setChoosingNewPlaylist(false);
     };
 
+    const handleNoLoginOK = () => {
+        login()
+        setChoosingNewPlaylist(false)
+        setUserID(getCookie())
+    };
+
     function ScrollingPlaylistMenu() {
         console.log("scrollingmenu called")
         if (playlistData === {} || !fetchedPlaylists) {
             // handle no playlists case (give a playlist of recommendations?)
-            const FetchedPlaylistsMessage = "you must be logged in to spotify to see your playlists!"
-            const EmptyPlaylistDataMessage  = "you have no playlists! get a playlists of recommendations at PAGE_TBD"
+            const FetchedPlaylistsMessage = "You must be logged in to spotify to see your playlists!"
+            const EmptyPlaylistDataMessage  = "You have no playlists! Get a playlists of recommendations instead ^"
+
             return (
                 <>
                     <div>
                         {fetchedPlaylists ? EmptyPlaylistDataMessage : FetchedPlaylistsMessage}
-                        <button onClick={() => setChoosingNewPlaylist(false)}>OK!</button>
+                        <button onClick={() => handleNoLoginOK()}>OK!</button>
                     </div>
                 </>
             ); 
@@ -119,7 +147,7 @@ export default function SpotifyGetPlaylists() {
             return (
                 <div>
                     <select value={currPlaylistID} onChange={handleOptionChange} 
-                        style={{maxWidth:'300px', backgroundColor:'#63ad77', color:'white', border:'none', padding:'5px 20px', margin:'2px 4px', textAlign:'center', display:'inline-block'}} 
+                        style={{maxWidth:'295px', height:'30px', backgroundColor:'#63ad77', color:'white', border:'none', padding:'5px 20px', margin:'4px 2px', textAlign:'center', display:'inline-block'}} 
                         id='playlistsDropdown'>
 
                         {playlistData.map((playlist) => (
@@ -131,6 +159,24 @@ export default function SpotifyGetPlaylists() {
                     {/* <p>currently playing from: {currentPlaylist}</p> */}
                 </div>
             )
+        }
+    }
+
+    async function getRecommendations() {
+        try {
+            const response = await axios.get('http://localhost:4000//_create_recommended_playlist', {params: {user_id: userID}})
+            
+            // console.log(response.data)
+            setCurrPlaylistID(response.data)
+        } catch (error) {
+            if (error.response) {
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request)
+            {
+                console.log(error.request);
+            }
         }
     }
 
@@ -147,10 +193,10 @@ export default function SpotifyGetPlaylists() {
     }
 
     return (
-        <div>
-            <ChangePlaylistButton onClick={() => setChoosingNewPlaylist(true)} id='changePlaylistButton' style={{border:'none'}}>Change Playlist</ChangePlaylistButton>
-            {choosingNewPlaylist ? <ScrollingPlaylistMenu/> : null} 
+        <div> 
             <SpotifyEmbed playlistID={currPlaylistID}/>
+            <ChangePlaylistButton onClick={() => setChoosingNewPlaylist(true)} id='changePlaylistButton' style={{border:'none'}}>Change Playlist</ChangePlaylistButton><PlayRecommendationsButton onClick={getRecommendations}>Play Recommendations</PlayRecommendationsButton>
+            {choosingNewPlaylist ? <ScrollingPlaylistMenu/> : null}
         </div>
     );
     

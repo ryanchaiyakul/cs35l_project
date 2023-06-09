@@ -276,6 +276,7 @@ async def _get_audio_metadata():
 @app.route("/_get_audio_data")
 async def _get_audio_data():
     title = request.args.get("title")
+    print(title)
     if not title:
         abort(400, "Must supply title query parameter!")
 
@@ -317,6 +318,27 @@ async def get_embed_html():
     if not embed.get("html"):
         abort(400, "Invalid spotify url")
     return embed["html"]
+
+@app.route("/_create_recommended_playlist")
+async def _create_recommended_playlist():
+    print(request.cookies.get("user_id"))
+    user_id = request.args.get("user_id")
+    if not user_id:
+        abort(400, "Must supply user_id query parameter!")
+    user = await get_user_from_id(user_id)
+    if not user:
+        abort(404, "Invalid user, user must log in to spotify first.")
+
+    rec_playlist = await app.db.fetch_recommended_playlist(user.id)
+    if not rec_playlist:
+        data = await user.create_recommended_playlist()
+        rec_playlist = data["id"]
+        await app.db.insert_recommended_playlist(user.id, rec_playlist)
+    
+    recs = await user.get_recommendations()
+    track_ids = [t["uri"] for t in recs["tracks"][:10]]
+    await user.add_to_playlist(rec_playlist, track_ids)
+    return rec_playlist
 
 
 if __name__ == "__main__":

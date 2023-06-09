@@ -191,8 +191,6 @@ class User:  # Current user's spotify instance
         recents = await self.get_recent_tracks(10)
 
         tracks = ",".join([t["track"]["id"] for t in recents["items"]][:5])
-        print(tracks)
-
         params = {
             "limit": limit,
             "seed_tracks": tracks,
@@ -306,7 +304,43 @@ class User:  # Current user's spotify instance
     async def get_embed(self, url):
         query = urlencode({"url": url})
         return await self.get(CONSTANTS.BASE_URL + "oembed?" + query)
+    
+    async def get_playlist(self, user, uri):
+        """Get a playlist's info from its URI"""
+        return await self.make_spotify_req(
+            CONSTANTS.API_URL + "users/{0}/playlists/{1}{2}".format(user, uri)
+        )
 
+    async def create_recommended_playlist(self):
+        spotify_id = await self.get_spotify_id()
+        data = {
+            "name": "My Terrarium Recomendations",
+            "public": True,
+            "collaborative": False,
+            "description": "",
+        }
+        
+        return await self.client.http.post(
+            CONSTANTS.API_URL + f"users/{spotify_id}/playlists",
+            data=json.dumps(data),
+            headers=await self.auth(),
+            res_method="json",
+        )
+    
+    async def add_to_playlist(self, playlist_id, uris: list, position=None):
+
+        while uris:
+            data = {"uris": uris[:100]}  # 100 at a time spotify limit.
+            if position:
+                data["position"] = position
+            snapshot = await self.client.http.put(
+                CONSTANTS.API_URL + f"playlists/{playlist_id}/tracks",
+                data=json.dumps(data),
+                headers=await self.auth(),
+                res_method="json",
+            )
+            uris = uris[100:]
+        return snapshot
 
 class BaseUtils:
     def __init__(self) -> None:
@@ -379,4 +413,3 @@ class Track(BaseUtils):
         self.raw = data
         self.json = json.dumps(data)
         self.index = data.get("index")
-
