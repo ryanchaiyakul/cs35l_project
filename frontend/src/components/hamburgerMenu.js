@@ -13,7 +13,6 @@ const MenuIcon = styled.div`
   bottom: 20px;
   left: 20px;
   z-index: 999;
-  overflow: auto;
 `;
 
 const HamburgerLine = styled.div`
