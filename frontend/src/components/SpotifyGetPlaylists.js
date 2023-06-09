@@ -74,7 +74,7 @@ export default function SpotifyGetPlaylists() {
     };
 
     const login = () => {
-        window.location.assign(window.location.href + "/connect")
+        window.location.assign("http://localhost:4000/connect")
     };
 
     async function getPlaylists(user_id) {
@@ -162,9 +162,7 @@ export default function SpotifyGetPlaylists() {
 
     async function getRecommendations() {
         try {
-            const response = await axios.get('http://localhost:4000//_create_recommended_playlist', {params: {user_id: userID}})
-            // comment
-            // console.log(response.data)
+            const response = await axios.get('http://localhost:4000/_create_recommended_playlist', {params: {user_id: userID}})
             setCurrPlaylistID(response.data)
         } catch (error) {
             if (error.response) {
