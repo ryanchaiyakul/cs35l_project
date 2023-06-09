@@ -157,7 +157,9 @@ function HomeScreen() {
         <SpotifyGetPlaylists/>
       </SpotifyEmbedContainer>
       <BottomRightContainer>
-        <StyledLink to="/mystats">MyStats</StyledLink>
+        <StyledLink to="/mystats">My Stats</StyledLink>
+        <StyledLink to="/liked">Liked Tracks</StyledLink>
+
         <HamburgerMenuButton isOpen={isOpen} onClick={handleClick}>
         Upload
       </HamburgerMenuButton>
