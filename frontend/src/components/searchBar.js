@@ -103,18 +103,7 @@ const PlaylistItem = styled.div`
   justify-content: space-between;
 `;
 
-const RemoveFromPlaylistButton = styled.button`
-  background-color: #1db1ff;
-  color: #fff;
-  padding: 5px 10px;
-  margin-left: 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-`;
-
-export default function SearchBar({ playlist, handlePlaylist, removeSong }) {
+export default function SearchBar({ playlist, handlePlaylist }) {
   const [songs, setSongs] = useState([]);
 
   // fetch list of audios and their metadata

@@ -16,6 +16,17 @@ const SongTitle = styled.p`
   margin-bottom: 5px;
 `;
 
+const RemoveFromPlaylistButton = styled.button`
+  background-color: #1db1ff;
+  color: #fff;
+  padding: 5px 10px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+`;
+
 /**
  * Returns HTML Audio Elements for every song in the passed in playlist prop
  * 
@@ -30,7 +41,7 @@ const SongTitle = styled.p`
  * 
  * Get it to run (debug backend)
  */
-function AudioPlayback({playlist}) {
+function AudioPlayback({playlist, removeSong}) {
     return (
         <div>
             {playlist.map(song => (
@@ -44,6 +55,7 @@ function AudioPlayback({playlist}) {
                             Download audio
                         </a>
                 </audio>
+                <RemoveFromPlaylistButton onClick={() => removeSong(song)}>x</RemoveFromPlaylistButton>
             </PlaylistItem>
         ))}
         </div>

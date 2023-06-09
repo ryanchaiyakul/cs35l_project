@@ -89,7 +89,7 @@ const HamburgerMenu = ({mainPlaylist, handlePlaylist, removeSong}) => {
       {isPopupOpen && (
         <Popup>
           <CloseButton onClick={closePopup}>Close</CloseButton>
-          <SearchBar playlist={mainPlaylist} handlePlaylist={handlePlaylist} removeSong={removeSong} />
+          <SearchBar playlist={mainPlaylist} handlePlaylist={handlePlaylist}/>
         </Popup>
       )}
     </div>
