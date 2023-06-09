@@ -13,6 +13,7 @@ const MenuIcon = styled.div`
   bottom: 20px;
   left: 20px;
   z-index: 999;
+  overflow: auto;
 `;
 
 const HamburgerLine = styled.div`
@@ -54,6 +55,7 @@ const Popup = styled.div`
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 998;
+  overflow: auto;
 `;
 
 const CloseButton = styled.button`
