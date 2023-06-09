@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import FileUpload from '../components/fileUpload.js';
 import HamburgerMenu from '../components/hamburgerMenu';
@@ -131,32 +131,41 @@ const SpotifyEmbedContainer = styled.div`
 
 const AudioContainer = styled.div`
   position: absolute;
-  border: none;
-  max-width: 300px;
+  padding: 20px;
+  background: linear-gradient(to bottom, #6BACBA 50%, #398393 65%); /* Gradient background */
+  border-radius: 8px;
+  width: 18%;
+  height: 50%;
   top: 20%;
   left: 5%;
 `;
 
-const RemoveFromPlaylistButton = styled.button`
-  background-color: #1db1ff;
-  color: #fff;
-  padding: 5px 10px;
-  margin-left: 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
+const PlaylistTitle = styled.div`
+  color: white;
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-weight: bold;
 `;
-
 
 function HomeScreen() {
     const [isOpen, setIsOpen] = useState(false);
     const [mainPlaylist, setPlaylist] = useState([]);
+    const [addedToPlaylist, setAddedToPlaylist] = useState(false); 
+
+    useEffect(() => {
+      if (addedToPlaylist) {
+        setTimeout(() => {
+          setAddedToPlaylist(false);
+        }, 3000); // Clear the "Added to playlist!" message after 3 seconds
+      }
+    }, [addedToPlaylist]);
 
     function handlePlaylist(song) {
       if (!mainPlaylist.includes(song)) {
         setPlaylist([...mainPlaylist, song]);
       }
+      setAddedToPlaylist(true);
     }
   
     function removeSong(removedSong) {
@@ -170,13 +179,14 @@ function HomeScreen() {
 
   return (
     <Container>
-      <HamburgerMenu mainPlaylist={mainPlaylist} handlePlaylist={handlePlaylist}/>
+      <HamburgerMenu mainPlaylist={mainPlaylist} handlePlaylist={handlePlaylist} addedToPlaylist={addedToPlaylist}/>
       <Title>My Terrarium</Title>
       <ImageContainer>
         <Image src="https://i.pinimg.com/originals/96/4c/82/964c82250ef9951e3309b8e36d2bf9b9.gif" alt="Terrarium" />
       </ImageContainer>
       <Message>Image by <Hyperlink href="https://mini-moss.tumblr.com/about">Mini Moss</Hyperlink></Message>
       <AudioContainer>
+        <PlaylistTitle> My Audios </PlaylistTitle>
         <AudioPlayback playlist={mainPlaylist} removeSong={removeSong}/>
       </AudioContainer>
       <SpotifyEmbedContainer>

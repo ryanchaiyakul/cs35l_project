@@ -18,6 +18,7 @@ const Form = styled.form`
 const ErrorMessage = styled.p`
   color: red;
   margin-bottom: 10px;
+  font-size: 16px;
 `;
 
 const StyledInput = styled.input`
@@ -56,18 +57,6 @@ function FileUpload() {
   const [userId, setUserId] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
-
-  const handleTitleChange = (event) => {
-    setTitle(event.target.value);
-  };
-
-  const handleTagChange = (event) => {
-    setTag(event.target.value);
-  };
-
   const getCookie = () => {
     const cookieArray = document.cookie.split(';');
 
@@ -81,12 +70,34 @@ function FileUpload() {
 
     return '';
   };
+   // Retrieve the user ID from cookies when the component mounts
+   useEffect(() => {
+    const id = getCookie();
+    setUserId(id);
+  }, []);
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+  };
+
+  const handleTagChange = (event) => {
+    setTag(event.target.value);
+  };
+
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
     if (!selectedFile || !title || !tag) {
       setErrorMessage('Please fill in all fields');
+      return;
+    }
+    if (!userId) {
+      setErrorMessage('You must log in to Spotify first');
       return;
     }
 
@@ -103,22 +114,21 @@ function FileUpload() {
         method: 'POST',
         body: formData,
       });
-
+  
       if (response.ok) {
         console.log('File upload successful');
       } else {
-        console.log('File upload failed');
+        const responseBody = await response.json();
+        if (responseBody.status === 502) {
+          setErrorMessage('A file with that same title has already been uploaded');
+        } else {
+          console.log('File upload failed');
+        }
       }
     } catch (error) {
       console.log('An error occurred during file upload:', error);
     }
   };
-
-  // Retrieve the user ID from cookies when the component mounts
-  useEffect(() => {
-    const id = getCookie();
-    setUserId(id);
-  }, []);
 
   console.log(userId);
 
