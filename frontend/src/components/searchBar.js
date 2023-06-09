@@ -75,7 +75,7 @@ const SongTitle = styled.p`
 `;
 
 const AddToPlaylistButton = styled.button`
-  background-color: #1db1ff;
+  background-color: #69B38E;
   color: #fff;
   padding: 5px 10px;
   border: none;

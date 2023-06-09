@@ -33,8 +33,8 @@ const StyledAudio = styled.audio`
 `;
 
 const RemoveFromPlaylistButton = styled.button`
-  background-color: #1db1ff;
-  color: #fff;
+  background-color: #fff;
+  color: black;
   padding: 5px 10px;
   margin-left: 10px;
   border: none;

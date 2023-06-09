@@ -106,7 +106,7 @@ const HamburgerMenuContainer = styled.div`
   width: 30%;
   height: 30%;
   background-color: #191414;
-  padding: 40px;
+  padding: 10px;
   justify-content: center;
   align-items: center;
 `;
@@ -138,6 +138,7 @@ const AudioContainer = styled.div`
   height: 50%;
   top: 20%;
   left: 5%;
+  overflow: auto; /* Enable scrolling when content exceeds container height */
 `;
 
 const PlaylistTitle = styled.div`
