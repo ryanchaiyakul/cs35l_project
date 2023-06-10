@@ -60,8 +60,21 @@ const ButtonLink = styled.a`
   display: block;
   width: inherit;
   height: 25px;
-  width: 65%;
+  width: 95%;
   background: #4E9CAF;
+  padding: 4px;
+  margin: 8px 2px;
+  border-radius: 4px;
+  text-align: center;
+  color: white;
+  line-height: 25px;
+`;
+const RedButtonLink = styled.a`
+  display: block;
+  width: inherit;
+  height: 25px;
+  width: 95%;
+  background: gray;
   padding: 4px;
   margin: 8px 2px;
   border-radius: 4px;
@@ -125,7 +138,7 @@ const CloseButton = styled.button`
 const SpotifyEmbedContainer = styled.div`
   position: absolute;
   border: none;
-  width: 30%;
+  max-width: 30%;
   top: 20%;
   right: 5%;
 `;
@@ -193,6 +206,7 @@ function HomeScreen() {
       </AudioContainer>
       <SpotifyEmbedContainer>
         <ButtonLink><a href="/connect" style={{textDecoration: 'inherit', color: 'inherit'}}>Connect To Spotify</a></ButtonLink>
+        <RedButtonLink><a href="/disconnect" style={{textDecoration: 'inherit', color: 'inherit'}}>Disconnect From Spotify</a></RedButtonLink>
         <SpotifyGetPlaylists/>
       </SpotifyEmbedContainer>
       <TopLeftContainer>

@@ -123,14 +123,14 @@ export default function SpotifyGetPlaylists() {
         console.log("scrollingmenu called")
         if (playlistData === {} || !fetchedPlaylists) {
             // handle no playlists case (give a playlist of recommendations?)
-            const FetchedPlaylistsMessage = "You must be logged in to spotify to see your playlists!"
+            const FetchedPlaylistsMessage = "You must first connect to Spotify!"
             const EmptyPlaylistDataMessage  = "You have no playlists! Get a playlists of recommendations instead ^"
 
             return (
                 <>
                     <div>
                         {fetchedPlaylists ? EmptyPlaylistDataMessage : FetchedPlaylistsMessage}
-                        <button onClick={() => handleNoLoginOK()}>OK!</button>
+                        {/* <button onClick={() => handleNoLoginOK()}>OK!</button> */}
                     </div>
                 </>
             ); 
@@ -163,6 +163,12 @@ export default function SpotifyGetPlaylists() {
     }
 
     async function getRecommendations() {
+        if (!fetchedPlaylists)
+        {
+            document.getElementById('recLogin').innerHTML = "You must login to get recommendations"
+            return
+        }
+        document.getElementById('recLogin').innerHTML = "You must login to get recommendations"
         try {
             const response = await axios.get('http://localhost:4000//_create_recommended_playlist', {params: {user_id: userID}})
             
@@ -197,6 +203,7 @@ export default function SpotifyGetPlaylists() {
             <SpotifyEmbed playlistID={currPlaylistID}/>
             <ChangePlaylistButton onClick={() => setChoosingNewPlaylist(true)} id='changePlaylistButton' style={{border:'none'}}>Change Playlist</ChangePlaylistButton><PlayRecommendationsButton onClick={getRecommendations}>Play Recommendations</PlayRecommendationsButton>
             {choosingNewPlaylist ? <ScrollingPlaylistMenu/> : null}
+            <p id='recLogin'></p>
         </div>
     );
     
