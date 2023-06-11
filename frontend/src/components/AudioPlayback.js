@@ -128,12 +128,18 @@ function AudioBlock({title}) {
  * Get it to run (debug backend)
  */
 function AudioPlayback({playlist, removeSong}) {
+    function removeSong(song)
+    {
+      var element = document.getElementById(song.title)
+      element.innerHTML = ""
+      removeSong(song)
+    }
     return (
         <div>
             {playlist.map(song => (
             <PlaylistItem key={song.title}>
                 <SongTitle>{song.title}     </SongTitle>
-                <AudioBlock title={song.title}/>
+                <AudioBlock title={song.title} id={song.title}/>
                 <RemoveFromPlaylistButton onClick={() => removeSong(song)}>x</RemoveFromPlaylistButton>
             </PlaylistItem>
         ))}
