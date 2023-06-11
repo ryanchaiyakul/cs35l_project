@@ -200,7 +200,9 @@ function HomeScreen() {
         <Image src="https://i.pinimg.com/originals/96/4c/82/964c82250ef9951e3309b8e36d2bf9b9.gif" alt="Terrarium" />
       </ImageContainer>
       <Message>Image by <Hyperlink href="https://mini-moss.tumblr.com/about">Mini Moss</Hyperlink></Message>
-      <AudioPlayback playlist={mainPlaylist}/>
+      <AudioContainer>
+        <AudioPlayback playlist={mainPlaylist}/>
+      </AudioContainer>
       <SpotifyEmbedContainer>
         <ButtonLink><a href="/connect" style={{textDecoration: 'inherit', color: 'inherit'}}>Connect To Spotify</a></ButtonLink>
         <RedButtonLink><a href="/disconnect" style={{textDecoration: 'inherit', color: 'inherit'}}>Disconnect From Spotify</a></RedButtonLink>
