@@ -201,7 +201,8 @@ function HomeScreen() {
       </ImageContainer>
       <Message>Image by <Hyperlink href="https://mini-moss.tumblr.com/about">Mini Moss</Hyperlink></Message>
       <AudioContainer>
-        <AudioPlayback playlist={mainPlaylist}/>
+        <PlaylistTitle> My Audios </PlaylistTitle>
+        <AudioPlayback playlist={mainPlaylist} removeSong={removeSong}/>
       </AudioContainer>
       <SpotifyEmbedContainer>
         <ButtonLink><a href="/connect" style={{textDecoration: 'inherit', color: 'inherit'}}>Connect To Spotify</a></ButtonLink>
