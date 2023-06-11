@@ -133,14 +133,14 @@ export default function SpotifyGetPlaylists() {
         // console.log("scrollingmenu called")
         if (playlistData === {} || !fetchedPlaylists) {
             // handle no playlists case (give a playlist of recommendations?)
-            const FetchedPlaylistsMessage = "You must be logged in to spotify to see your playlists/get recommendations!"
+            const FetchedPlaylistsMessage = "You must first connect to Spotify!"
             const EmptyPlaylistDataMessage  = "You have no playlists! Get a playlists of recommendations instead ^"
 
             return (
                 <>
                     <div>
                         {fetchedPlaylists ? EmptyPlaylistDataMessage : FetchedPlaylistsMessage}
-                        <ConfirmLoginButton onClick={() => handleNoLoginOK()}>OK</ConfirmLoginButton>
+                        {/* <button onClick={() => handleNoLoginOK()}>OK!</button> */}
                     </div>
                 </>
             ); 
@@ -173,11 +173,12 @@ export default function SpotifyGetPlaylists() {
     }
 
     async function getRecommendations() {
-        if (!fetchedPlaylists) // not logged in
+        if (!fetchedPlaylists)
         {
-            // console.log("inside if statement")
-            login();
+            document.getElementById('recLogin').innerHTML = "You must login to get recommendations"
+            return
         }
+        document.getElementById('recLogin').innerHTML = "You must login to get recommendations"
         try {
             const response = await axios.get('http://localhost:4000/_create_recommended_playlist', {params: {user_id: userID}})
             setCurrPlaylistID(response.data)
@@ -208,6 +209,7 @@ export default function SpotifyGetPlaylists() {
             <ChangePlaylistButton onClick={() => setChoosingNewPlaylist(true)} id='changePlaylistButton' style={{border:'none'}}>Change Playlist</ChangePlaylistButton><PlayRecommendationsButton onClick={getRecommendations}>Play Recommendations</PlayRecommendationsButton>
             </div>
             {choosingNewPlaylist ? <ScrollingPlaylistMenu/> : null}
+            <p id='recLogin'></p>
         </div>
     );
     

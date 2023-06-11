@@ -16,6 +16,7 @@ from quart import (
     render_template,
     session,
     make_response,
+    flash
 )
 
 import config
@@ -176,7 +177,10 @@ async def spotify_connect():
 async def spotify_disconnect():
     user_id = request.cookies.get("user_id")
     if not user_id:
-        return "You are not logged in"
+        await flash("You are not logged in to spotify.")
+        response = await make_response(redirect(url_for("home")))
+        return response
+        # return "You are not logged in"
 
     await app.db.delete_user(user_id)
     response = await make_response(redirect(url_for("home")))
