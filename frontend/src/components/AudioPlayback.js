@@ -20,6 +20,10 @@ const PlaylistItem = styled.div`
 `;
 
 const SongTitle = styled.p`
+  justify-content: center;
+  font-size: 14px;
+  margin-bottom: 17px;
+  margin-right: 20px;
   width: 75%;
   color: #fff;
   font-size: 16px;
