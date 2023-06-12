@@ -16,7 +16,7 @@ from quart import (
     render_template,
     session,
     make_response,
-    flash
+    flash,
 )
 
 import config
